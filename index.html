@@ -226,11 +226,19 @@
 
   @media (max-width: 760px){
     .feature{ display:grid; grid-template-columns:1fr; gap:24px; }
-    .feature.reverse .feature-media{ order:0; }
-    .feature.reverse .feature-text{ order:0; }
+    .feature .feature-media,
+    .feature.reverse .feature-media{ order:2; }
+    .feature .feature-text,
+    .feature.reverse .feature-text{ order:1; }
     .info-grid{ grid-template-columns:1fr; }
-    .tab-links{ gap:14px; }
-    .tab-links button{ font-size:0.8rem; }
+
+    .tabs-inner{ flex-wrap:wrap; padding:12px 20px; row-gap:10px; }
+    .tab-links{
+      order:3; width:100%; flex-wrap:nowrap; overflow-x:auto;
+      gap:16px; padding-top:2px; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    }
+    .tab-links::-webkit-scrollbar{ display:none; }
+    .tab-links button{ flex:0 0 auto; font-size:0.82rem; }
   }
 </style>
 </head>
