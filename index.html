@@ -149,6 +149,8 @@
   }
   .map-frame iframe{ width:100%; height:230px; border:0; display:block; filter:grayscale(0.15) contrast(1.02); }
   .map-link{ display:inline-block; margin-top:12px; font-size:0.85rem; border-bottom:1px solid var(--gold); padding-bottom:1px; }
+  .map-link{ display:inline-block; margin-top:12px; font-size:0.85rem; border-bottom:1px solid var(--gold); padding-bottom:1px; }
+  .feature-map{ grid-column: 1 / -1; order:3; }
   .kicker-inline{ font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold); display:block; margin-bottom:6px; }
 
   /* ---------- TIMELINE (El día) ---------- */
@@ -230,6 +232,8 @@
     .feature.reverse .feature-media{ order:2; }
     .feature .feature-text,
     .feature.reverse .feature-text{ order:1; }
+    .feature .feature-map,
+    .feature.reverse .feature-map{ order:3; }
     .info-grid{ grid-template-columns:1fr; }
 
     .tabs-inner{ flex-wrap:wrap; padding:12px 20px; row-gap:10px; }
@@ -295,12 +299,15 @@
     <div class="wrap">
       <div class="feature">
         <div class="feature-media church">
+          <div class="placeholder-label">Sustituir por una foto real en<br><code>images/iglesia.jpg</code></div>
         </div>
         <div class="feature-text">
           <span class="kicker-inline">La ceremonia</span>
           <h3>Parroquia de Santiago Apóstol</h3>
           <p class="addr">Calle Granada, 78 · 29015 Málaga</p>
           <p>Es la iglesia más antigua de Málaga, y para nosotros un lugar muy especial. La misa comenzará a las 12:00 del mediodía.</p>
+        </div>
+        <div class="feature-map">
           <div class="map-frame">
             <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade"
               src="https://www.google.com/maps?q=Parroquia+de+Santiago+Apóstol,+Calle+Granada+78,+Málaga&output=embed">
@@ -316,12 +323,15 @@
     <div class="wrap">
       <div class="feature reverse">
         <div class="feature-media venue">
+          <div class="placeholder-label">Sustituir por una foto real en<br><code>images/finca.jpg</code></div>
         </div>
         <div class="feature-text">
           <span class="kicker-inline">La celebración</span>
           <h3>Hacienda del Álamo</h3>
           <p class="addr">Camino de Casabermeja, 130 · Málaga</p>
           <p>Después de la ceremonia os esperamos aquí, en una finca del siglo XIX rodeada de jardines centenarios a quince minutos del centro de Málaga, donde celebraremos juntos con cena y baile hasta bien entrada la noche.</p>
+        </div>
+        <div class="feature-map">
           <div class="map-frame">
             <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade"
               src="https://www.google.com/maps?q=Hacienda+del+Álamo,+Camino+de+Casabermeja+130,+Málaga&output=embed">
