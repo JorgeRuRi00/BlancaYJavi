@@ -155,6 +155,19 @@
   .feature-map{ grid-column: 1 / -1; order:3; }
   .kicker-inline{ font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--gold); display:block; margin-bottom:6px; font-size:1.3rem; }
 
+  /* ---------- GRACIAS / APORTACIÓN ---------- */
+  .gift-head{ text-align:center; margin-left:auto; margin-right:auto; }
+  .gift-account{
+    margin-top:20px; display:inline-block; font-family:'Cormorant Garamond', serif; font-size:1.3rem;
+    letter-spacing:0.03em; color:var(--olive-deep); border:1px solid var(--line); background:var(--paper);
+    padding:12px 26px; border-radius:2px;
+  }
+  .gift-photo{ max-width:480px; margin:44px auto; border-radius:2px; overflow:hidden; }
+  .gift-photo img{ width:100%; display:block; }
+  .gift-contacts{ display:flex; justify-content:center; gap:56px; flex-wrap:wrap; text-align:center; }
+  .gift-contact .name{ display:block; font-family:'Cormorant Garamond', serif; font-style:italic; color:var(--gold); font-size:1.2rem; margin-bottom:4px; }
+  .gift-contact .meta{ font-size:0.92rem; color:var(--olive-deep); }
+
   /* ---------- CALENDARIO ---------- */
   .calendar-cta{ margin-top:28px; display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
   .calendar-card{
@@ -188,6 +201,11 @@
   .timeline-item h3{ font-size:1.5rem; margin-bottom:8px; }
   .timeline-item p{ margin:0 0 6px; opacity:0.9; }
   .tbc{ color:var(--rust); font-style:italic; font-size:0.88rem; }
+
+  .day-illustration{
+    width:100%; height:auto; max-height:170px; display:block; margin:0 0 40px;
+    fill:none; stroke:var(--gold); stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round;
+  }
 
   /* ---------- RECUERDOS (fotos) ---------- */
   .upload-box{
@@ -416,6 +434,31 @@
       </div>
     </div>
   </div>
+
+  <div class="section">
+    <div class="wrap">
+      <div class="section-head gift-head">
+        <h2>Gracias por acompañarnos</h2>
+        <p>Si queréis ayudarnos en esta nueva aventura, podéis hacerlo aquí.</p>
+        <div class="gift-account">IBAN por confirmar</div>
+      </div>
+
+      <div class="gift-photo">
+        <img src="images/fotofinal.jpeg" alt="Blanca y Javi">
+      </div>
+
+      <div class="gift-contacts">
+        <div class="gift-contact">
+          <span class="name">Blanca</span>
+          <span class="meta">Teléfono por confirmar</span>
+        </div>
+        <div class="gift-contact">
+          <span class="name">Javi</span>
+          <span class="meta">Teléfono por confirmar</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ============ EL DÍA (logística) ============ -->
@@ -425,6 +468,44 @@
       <div class="section-head">
         <h2>Cómo va a ir el día</h2>
       </div>
+
+      <svg class="day-illustration" viewBox="0 0 1000 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- línea de suelo -->
+        <path d="M0,155 Q45,125 95,145 L150,150 L830,150 Q875,128 925,150 L1000,150" />
+
+        <!-- iglesia -->
+        <path d="M255,60 L270,28 L285,60" />
+        <line x1="270" y1="28" x2="270" y2="10" />
+        <line x1="261" y1="17" x2="279" y2="17" />
+        <rect x="253" y="60" width="34" height="60" />
+        <circle cx="270" cy="80" r="6" />
+        <path d="M205,150 L205,108 L335,108 L335,150" />
+        <path d="M255,150 L255,128 A15,15 0 0 1 285,128 L285,150" />
+        <line x1="222" y1="130" x2="222" y2="150" />
+        <line x1="318" y1="130" x2="318" y2="150" />
+
+        <!-- autobús -->
+        <rect x="430" y="112" width="100" height="38" rx="8" />
+        <line x1="430" y1="132" x2="530" y2="132" />
+        <line x1="452" y1="112" x2="452" y2="132" />
+        <line x1="474" y1="112" x2="474" y2="132" />
+        <line x1="496" y1="112" x2="496" y2="132" />
+        <line x1="518" y1="112" x2="518" y2="132" />
+        <circle cx="452" cy="150" r="8" />
+        <circle cx="508" cy="150" r="8" />
+
+        <!-- hacienda del álamo -->
+        <path d="M655,150 Q655,105 655,90" />
+        <path d="M885,150 Q885,105 885,90" />
+        <rect x="600" y="95" width="270" height="55" />
+        <line x1="600" y1="95" x2="870" y2="95" />
+        <path d="M600,95 L600,84 L870,84 L870,95" />
+        <path d="M718,150 L718,118 A17,17 0 0 1 752,118 L752,150" />
+        <path d="M635,120 L635,102 A9,9 0 0 1 653,102 L653,120" />
+        <path d="M660,120 L660,102 A9,9 0 0 1 678,102 L678,120" />
+        <path d="M792,120 L792,102 A9,9 0 0 1 810,102 L810,120" />
+        <path d="M817,120 L817,102 A9,9 0 0 1 835,102 L835,120" />
+      </svg>
 
       <div class="timeline">
         <div class="timeline-item">

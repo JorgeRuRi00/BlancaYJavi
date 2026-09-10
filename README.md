@@ -107,7 +107,19 @@ guarda el nombre y la puntuación en una hoja de cálculo nueva, **"Puntuaciones
 (`RSVP_FOLDER_ID`) — no hace falta configurar nada adicional si ya tienes el backend
 funcionando para las confirmaciones y las fotos.
 
-## 10. Solución de problemas
+## 12. Sección "Gracias por acompañarnos" (aportación económica)
+
+Al final de la pestaña "Inicio" hay una sección nueva con hueco para el número de
+cuenta, una foto y los teléfonos de contacto. Falta por vuestra parte:
+
+- **Foto**: añadid un archivo `images/fotofinal.jpeg` (mismo nombre exacto, en
+  minúsculas) junto a las demás fotos.
+- **Número de cuenta**: en `index.html`, busca el texto `IBAN por confirmar` y
+  sustitúyelo por vuestro IBAN.
+- **Teléfonos**: busca las dos apariciones de `Teléfono por confirmar` (una para
+  Blanca, otra para Javi, en ese orden) y pon cada número.
+
+## 13. Solución de problemas
 
 ### "La web dice que se ha subido bien pero no aparece en Drive"
 
