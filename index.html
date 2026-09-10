@@ -249,15 +249,23 @@
   /* ---------- RAMITO FLOTANTE (acceso al juego) ---------- */
   .game-fab{
     position:fixed; right:18px; bottom:18px; z-index:40;
-    display:flex; align-items:center; gap:8px;
+    display:flex; align-items:center;
     background:var(--olive-deep); color:var(--paper); border:none; border-radius:999px;
     padding:10px 16px 10px 12px; cursor:pointer;
     box-shadow:0 8px 20px rgba(43,42,34,0.28);
     font-family:'Jost', sans-serif; font-size:0.8rem;
-    transition:transform 0.2s ease, box-shadow 0.2s ease;
+    transition:transform 0.2s ease, box-shadow 0.2s ease, padding 0.4s ease;
   }
   .game-fab:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(43,42,34,0.34); }
   .game-fab-emoji{ font-size:1.25rem; line-height:1; }
+  .game-fab-label{
+    max-width:120px; margin-left:8px; overflow:hidden; white-space:nowrap;
+    opacity:1; transition:max-width 0.4s ease, margin-left 0.4s ease, opacity 0.3s ease;
+  }
+  .game-fab.collapsed{ padding:10px; }
+  .game-fab.collapsed .game-fab-label{ max-width:0; margin-left:0; opacity:0; }
+  .game-fab.collapsed:hover{ padding:10px 16px 10px 12px; }
+  .game-fab.collapsed:hover .game-fab-label{ max-width:120px; margin-left:8px; opacity:1; }
 
   /* ---------- JUEGO ---------- */
   .game-box{
@@ -324,7 +332,7 @@
 
 <button class="game-fab" id="gameFab" onclick="showTab('juego')" aria-label="Jugar a Atrapa el ramo">
   <span class="game-fab-emoji">💐</span>
-  <span class="game-fab-label">Juega conmigo</span>
+  <span class="game-fab-label">¿Jugamos?</span>
 </button>
 
 <!-- ============ INICIO ============ -->
@@ -598,9 +606,14 @@
       </div>
 
       <form id="scoreForm" class="rsvp-form hidden" style="margin-top:24px;">
+        <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.1rem; color:var(--olive-deep); margin-bottom:16px;">¡Buena partida! Escribe tu nombre y apellidos para el marcador.</p>
         <div class="form-row">
-          <label for="scoreNombre">¡Buena partida! ¿Cómo te llamas para el marcador?</label>
-          <input type="text" id="scoreNombre" name="scoreNombre" required maxlength="40">
+          <label for="scoreNombre">Nombre</label>
+          <input type="text" id="scoreNombre" name="scoreNombre" required>
+        </div>
+        <div class="form-row">
+          <label for="scoreApellidos">Apellidos</label>
+          <input type="text" id="scoreApellidos" name="scoreApellidos" required>
         </div>
         <button type="submit" class="primary-btn">Guardar puntuación</button>
         <div class="upload-status" id="scoreStatus"></div>
@@ -625,6 +638,10 @@
   const tabButtons = document.querySelectorAll('.tab-links button');
   const panels = document.querySelectorAll('.tab-panel');
   let onOpenJuego = null;
+  setTimeout(() => {
+    const fab = document.getElementById('gameFab');
+    if(fab){ fab.classList.add('collapsed'); }
+  }, 4000);
   function showTab(tabName){
     tabButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
     panels.forEach(p => p.classList.toggle('active', p.id === 'panel-' + tabName));
@@ -916,6 +933,8 @@
     canvas.addEventListener('pointerdown', jump);
     document.addEventListener('keydown', (e) => {
       if(e.code === 'Space' && document.getElementById('panel-juego').classList.contains('active')){
+        const tag = document.activeElement ? document.activeElement.tagName : '';
+        if(tag === 'INPUT' || tag === 'TEXTAREA') return;
         e.preventDefault();
         jump();
       }
@@ -932,6 +951,8 @@
       }
 
       const nombre = document.getElementById('scoreNombre').value.trim();
+      const apellidos = document.getElementById('scoreApellidos').value.trim();
+      const nombreCompleto = `${nombre} ${apellidos}`.trim();
       const puntuacion = Number(scoreForm.dataset.lastScore || 0);
 
       scoreStatus.textContent = 'Guardando...';
@@ -939,7 +960,7 @@
         const res = await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ type: 'score', nombre, puntuacion })
+          body: JSON.stringify({ type: 'score', nombre: nombreCompleto, puntuacion })
         });
         const result = await res.json();
         if(result.success){
