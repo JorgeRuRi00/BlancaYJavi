@@ -21,6 +21,7 @@
     --max: 1040px;
   }
   *{box-sizing:border-box;}
+  .hidden{ display:none; }
   html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; text-size-adjust:100%; }
   html, body{ overflow-x:hidden; max-width:100%; }
   body{
@@ -245,6 +246,19 @@
 
   footer{ text-align:center; padding:48px 28px; font-family:'Cormorant Garamond', serif; font-style:italic; color:var(--olive); }
 
+  /* ---------- RAMITO FLOTANTE (acceso al juego) ---------- */
+  .game-fab{
+    position:fixed; right:18px; bottom:18px; z-index:40;
+    display:flex; align-items:center; gap:8px;
+    background:var(--olive-deep); color:var(--paper); border:none; border-radius:999px;
+    padding:10px 16px 10px 12px; cursor:pointer;
+    box-shadow:0 8px 20px rgba(43,42,34,0.28);
+    font-family:'Jost', sans-serif; font-size:0.8rem;
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .game-fab:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(43,42,34,0.34); }
+  .game-fab-emoji{ font-size:1.25rem; line-height:1; }
+
   /* ---------- JUEGO ---------- */
   .game-box{
     position:relative; border:1px solid var(--line); border-radius:2px; background:var(--paper);
@@ -278,6 +292,8 @@
     }
     .tab-links::-webkit-scrollbar{ display:none; }
     .tab-links button{ flex:0 0 auto; font-size:0.82rem; }
+    .game-fab{ padding:9px 14px 9px 10px; right:14px; bottom:14px; }
+    .game-fab-label{ font-size:0.76rem; }
   }
 </style>
 </head>
@@ -296,7 +312,6 @@
       <button data-tab="rsvp">Confirmar asistencia</button>
       <button data-tab="info">Info útil</button>
       <button data-tab="recuerdos">Recuerdos</button>
-      <button data-tab="juego">Juego</button>
     </div>
     <div style="position:relative;">
       <button class="music-toggle" id="musicToggle" title="Silenciar o activar música" aria-label="Silenciar o activar música">♪</button>
@@ -306,6 +321,11 @@
     </div>
   </div>
 </nav>
+
+<button class="game-fab" id="gameFab" onclick="showTab('juego')" aria-label="Jugar a Atrapa el ramo">
+  <span class="game-fab-emoji">💐</span>
+  <span class="game-fab-label">Juega conmigo</span>
+</button>
 
 <!-- ============ INICIO ============ -->
 <section class="tab-panel active" id="panel-inicio">
@@ -604,9 +624,13 @@
   // ---- Tabs ----
   const tabButtons = document.querySelectorAll('.tab-links button');
   const panels = document.querySelectorAll('.tab-panel');
+  let onOpenJuego = null;
   function showTab(tabName){
     tabButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
     panels.forEach(p => p.classList.toggle('active', p.id === 'panel-' + tabName));
+    const fab = document.getElementById('gameFab');
+    if(fab){ fab.classList.toggle('hidden', tabName === 'juego'); }
+    if(tabName === 'juego' && onOpenJuego){ setTimeout(onOpenJuego, 50); }
     window.scrollTo({top:0, behavior:'smooth'});
   }
   tabButtons.forEach(btn => {
@@ -799,6 +823,7 @@
     }
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
+    onOpenJuego = () => { resizeCanvas(); draw(); };
 
     let groundY, player, obstacles, spawnTimer, speed, score, running, gameOverFlag, animFrame;
 
@@ -822,8 +847,8 @@
     }
 
     function jump(){
-      if(!running && !gameOverFlag){ startGame(); return; }
-      if(running && player.y >= groundY){ player.vy = -12; }
+      if(!running){ startGame(); return; }
+      if(player.y >= groundY){ player.vy = -12; }
     }
 
     function rectsOverlap(a, b){
