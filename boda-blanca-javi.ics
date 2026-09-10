@@ -1,0 +1,13 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Boda Blanca y Javi//ES
+BEGIN:VEVENT
+UID:boda-blanca-javi-2027@bodablancayjavi
+DTSTAMP:20270101T000000Z
+DTSTART:20270501T100000Z
+DTEND:20270501T220000Z
+SUMMARY:Boda de Blanca & Javi
+DESCRIPTION:Misa a las 12:00 en la Parroquia de Santiago Apóstol, seguida de la celebración en la Hacienda del Álamo.
+LOCATION:Parroquia de Santiago Apóstol, Calle Granada 78, Málaga
+END:VEVENT
+END:VCALENDAR
