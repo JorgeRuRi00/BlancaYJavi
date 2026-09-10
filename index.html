@@ -245,6 +245,21 @@
 
   footer{ text-align:center; padding:48px 28px; font-family:'Cormorant Garamond', serif; font-style:italic; color:var(--olive); }
 
+  /* ---------- JUEGO ---------- */
+  .game-box{
+    position:relative; border:1px solid var(--line); border-radius:2px; background:var(--paper);
+    overflow:hidden;
+  }
+  #gameCanvas{ display:block; width:100%; height:200px; touch-action:manipulation; }
+  .game-overlay{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    text-align:center; padding:20px; background:rgba(247,242,232,0.55);
+    font-family:'Cormorant Garamond', serif; font-style:italic; color:var(--olive-deep); font-size:1.1rem;
+    pointer-events:none;
+  }
+  .game-overlay.hidden{ display:none; }
+  #leaderboardList .rank{ color:var(--gold); font-family:'Cormorant Garamond', serif; font-style:italic; margin-right:8px; }
+
   @media (max-width: 760px){
     .section{ padding:40px 0; }
     .feature{ display:grid; grid-template-columns:1fr; gap:24px; }
@@ -281,6 +296,7 @@
       <button data-tab="rsvp">Confirmar asistencia</button>
       <button data-tab="info">Info útil</button>
       <button data-tab="recuerdos">Recuerdos</button>
+      <button data-tab="juego">Juego</button>
     </div>
     <div style="position:relative;">
       <button class="music-toggle" id="musicToggle" title="Silenciar o activar música" aria-label="Silenciar o activar música">♪</button>
@@ -335,7 +351,7 @@
           <span class="kicker-inline">La ceremonia</span>
           <h3>Parroquia de Santiago Apóstol</h3>
           <p class="addr">Calle Granada, 78 · 29015 Málaga</p>
-          <p>Es la iglesia más antigua de Málaga, y para nosotros un lugar muy especial. La misa comenzará a las 12:00 del mediodía.</p>
+          <p>Fundada en 1509, es la iglesia más antigua de Málaga y, para nosotros, un lugar muy especial. La misa comenzará a <strong>las 12:00 del mediodía</strong>.</p>
         </div>
         <div class="feature-map">
           <div class="map-frame">
@@ -358,7 +374,8 @@
           <span class="kicker-inline">La celebración</span>
           <h3>Hacienda del Álamo</h3>
           <p class="addr">Camino de Casabermeja, 130 · Málaga</p>
-          <p>Después de la ceremonia os esperamos aquí, en una finca del siglo XIX rodeada de jardines centenarios a quince minutos del centro de Málaga, donde celebraremos juntos con cena y baile hasta bien entrada la noche.</p>
+          <p>Después de la ceremonia nos trasladaremos a esta finca del siglo XIX, rodeada de jardines centenarios y situada a quince minutos del centro de Málaga, donde la celebración dará comienzo a las 14:30 con cena y baile hasta bien entrada la noche.</p>
+          <p><a href="#" class="map-link" onclick="event.preventDefault(); showTab('dia');">Consulta toda la logística del traslado en la pestaña «El día»</a></p>
         </div>
         <div class="feature-map">
           <div class="map-frame">
@@ -543,6 +560,42 @@
   </div>
 </section>
 
+<!-- ============ JUEGO ============ -->
+<section class="tab-panel" id="panel-juego">
+  <div class="section" style="padding-top:56px;">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="kicker">Un poco de diversión</span>
+        <h2>Atrapa el ramo</h2>
+        <p>Saltad las copas de champán y llegad lo más lejos posible. ¡Quien consiga la puntuación más alta se lleva un premio especial el día de la boda!</p>
+      </div>
+
+      <div class="game-box">
+        <canvas id="gameCanvas" height="200"></canvas>
+        <div class="game-overlay" id="gameOverlay">
+          <p id="gameOverlayText">Toca la pantalla o pulsa espacio para empezar</p>
+        </div>
+      </div>
+
+      <form id="scoreForm" class="rsvp-form hidden" style="margin-top:24px;">
+        <div class="form-row">
+          <label for="scoreNombre">¡Buena partida! ¿Cómo te llamas para el marcador?</label>
+          <input type="text" id="scoreNombre" name="scoreNombre" required maxlength="40">
+        </div>
+        <button type="submit" class="primary-btn">Guardar puntuación</button>
+        <div class="upload-status" id="scoreStatus"></div>
+      </form>
+
+      <div class="section-head" style="margin-top:56px; margin-bottom:8px;">
+        <h2 style="font-size:1.9rem;">Marcador</h2>
+      </div>
+      <ul class="info-list" id="leaderboardList">
+        <li><span class="name">Cargando...</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <footer>
   Con todo nuestro cariño, Blanca &amp; Javi · 1 de mayo de 2027
 </footer>
@@ -551,14 +604,13 @@
   // ---- Tabs ----
   const tabButtons = document.querySelectorAll('.tab-links button');
   const panels = document.querySelectorAll('.tab-panel');
+  function showTab(tabName){
+    tabButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
+    panels.forEach(p => p.classList.toggle('active', p.id === 'panel-' + tabName));
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
   tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      tabButtons.forEach(b => b.classList.remove('active'));
-      panels.forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
-      window.scrollTo({top:0, behavior:'smooth'});
-    });
+    btn.addEventListener('click', () => showTab(btn.dataset.tab));
   });
 
   // ---- Countdown ----
@@ -732,6 +784,175 @@
     }
   }
   loadGallery();
+
+  // ---- Juego: Atrapa el ramo ----
+  const canvas = document.getElementById('gameCanvas');
+  if(canvas){
+    const ctx = canvas.getContext('2d');
+    const overlay = document.getElementById('gameOverlay');
+    const overlayText = document.getElementById('gameOverlayText');
+    const scoreForm = document.getElementById('scoreForm');
+    const scoreStatus = document.getElementById('scoreStatus');
+
+    function resizeCanvas(){
+      canvas.width = canvas.clientWidth;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    let groundY, player, obstacles, spawnTimer, speed, score, running, gameOverFlag, animFrame;
+
+    function resetGame(){
+      groundY = canvas.height - 40;
+      player = { x: 40, y: groundY, vy: 0 };
+      obstacles = [];
+      spawnTimer = 60;
+      speed = 4;
+      score = 0;
+      gameOverFlag = false;
+    }
+    resetGame();
+
+    function startGame(){
+      resetGame();
+      running = true;
+      overlay.classList.add('hidden');
+      scoreForm.classList.add('hidden');
+      animFrame = requestAnimationFrame(loop);
+    }
+
+    function jump(){
+      if(!running && !gameOverFlag){ startGame(); return; }
+      if(running && player.y >= groundY){ player.vy = -12; }
+    }
+
+    function rectsOverlap(a, b){
+      return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+    }
+
+    function update(){
+      player.vy += 0.7;
+      player.y += player.vy;
+      if(player.y > groundY){ player.y = groundY; player.vy = 0; }
+
+      spawnTimer--;
+      if(spawnTimer <= 0){
+        obstacles.push({ x: canvas.width + 10 });
+        spawnTimer = Math.max(38, 75 - Math.floor(score / 4));
+      }
+      obstacles.forEach(o => o.x -= speed);
+      obstacles = obstacles.filter(o => o.x > -30);
+
+      speed += 0.0025;
+      score += 0.15;
+
+      const playerBox = { x: player.x - 13, y: player.y - 26, w: 26, h: 26 };
+      obstacles.forEach(o => {
+        const obsBox = { x: o.x - 12, y: groundY - 22, w: 24, h: 24 };
+        if(rectsOverlap(playerBox, obsBox)){ gameOverFlag = true; }
+      });
+    }
+
+    function draw(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = 'rgba(43,42,34,0.2)';
+      ctx.beginPath();
+      ctx.moveTo(0, groundY + 2);
+      ctx.lineTo(canvas.width, groundY + 2);
+      ctx.stroke();
+
+      ctx.font = '26px sans-serif';
+      ctx.fillText('💐', player.x - 13, player.y);
+      obstacles.forEach(o => ctx.fillText('🥂', o.x - 12, groundY));
+
+      ctx.fillStyle = '#333F2A';
+      ctx.font = "14px 'Jost', sans-serif";
+      ctx.fillText('Puntos: ' + Math.floor(score), 10, 20);
+    }
+
+    function loop(){
+      update();
+      draw();
+      if(gameOverFlag){
+        running = false;
+        onGameOver();
+      }else{
+        animFrame = requestAnimationFrame(loop);
+      }
+    }
+
+    function onGameOver(){
+      overlayText.textContent = 'Puntuación: ' + Math.floor(score) + ' — toca para volver a intentarlo';
+      overlay.classList.remove('hidden');
+      scoreForm.classList.remove('hidden');
+      scoreForm.dataset.lastScore = Math.floor(score);
+    }
+
+    canvas.addEventListener('pointerdown', jump);
+    document.addEventListener('keydown', (e) => {
+      if(e.code === 'Space' && document.getElementById('panel-juego').classList.contains('active')){
+        e.preventDefault();
+        jump();
+      }
+    });
+
+    scoreForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      scoreStatus.classList.remove('error');
+
+      if(!BACKEND_CONFIGURADO){
+        scoreStatus.textContent = 'Falta conectar el backend de Drive (ver README.md).';
+        scoreStatus.classList.add('error');
+        return;
+      }
+
+      const nombre = document.getElementById('scoreNombre').value.trim();
+      const puntuacion = Number(scoreForm.dataset.lastScore || 0);
+
+      scoreStatus.textContent = 'Guardando...';
+      try{
+        const res = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ type: 'score', nombre, puntuacion })
+        });
+        const result = await res.json();
+        if(result.success){
+          scoreStatus.textContent = '¡Puntuación guardada!';
+          scoreForm.classList.add('hidden');
+          loadLeaderboard();
+        }else{
+          scoreStatus.textContent = 'No se pudo guardar: ' + (result.error || '');
+          scoreStatus.classList.add('error');
+        }
+      }catch(err){
+        scoreStatus.textContent = 'Error al guardar. Inténtalo de nuevo.';
+        scoreStatus.classList.add('error');
+      }
+    });
+
+    async function loadLeaderboard(){
+      const list = document.getElementById('leaderboardList');
+      if(!BACKEND_CONFIGURADO){
+        list.innerHTML = '<li><span class="name">Falta conectar el backend (ver README.md)</span></li>';
+        return;
+      }
+      try{
+        const res = await fetch(APPS_SCRIPT_URL + '?type=scores');
+        const rows = await res.json();
+        if(!Array.isArray(rows) || !rows.length){
+          list.innerHTML = '<li><span class="name">Todavía no hay puntuaciones. ¡Sé el primero!</span></li>';
+          return;
+        }
+        list.innerHTML = rows.map((r, i) => `
+          <li><span class="rank">#${i + 1}</span><span class="name">${r.nombre}</span><span class="meta">${r.puntuacion} puntos</span></li>
+        `).join('');
+      }catch(err){
+        list.innerHTML = '<li><span class="name">No se pudo cargar el marcador.</span></li>';
+      }
+    }
+    loadLeaderboard();
+  }
 </script>
 
 </body>
