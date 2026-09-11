@@ -244,12 +244,15 @@
   .info-list .name{ font-weight:500; display:block; }
   .info-list .meta{ font-size:0.85rem; color:var(--olive); }
   .note{ font-size:0.82rem; color:var(--rust); font-style:italic; margin-top:10px; }
+  .info-block .lead{ font-size:0.92rem; color:var(--ink); margin-bottom:16px; }
+  .info-block .lead a{ color:var(--olive-deep); border-bottom:1px solid var(--gold); }
 
   /* ---------- FORMULARIO RSVP ---------- */
   .rsvp-form{ max-width:520px; }
   .form-row{ margin-bottom:24px; }
   .form-row.hidden{ display:none; }
   .form-row label{ display:block; font-size:0.9rem; color:var(--olive-deep); margin-bottom:8px; }
+  .form-row .hint{ font-size:0.85rem; color:var(--olive); margin-bottom:10px; }
   .rsvp-form input[type=text], .rsvp-form textarea{
     width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:2px;
     background:var(--paper); font-family:'Jost', sans-serif; font-size:0.95rem; color:var(--ink);
@@ -421,7 +424,7 @@
           <h3>Hacienda del Álamo</h3>
           <p class="addr">Camino de Casabermeja, 130 · Málaga</p>
           <p>Después de la ceremonia nos trasladaremos a esta finca del siglo XIX, rodeada de jardines centenarios y situada a quince minutos del centro de Málaga, donde la celebración dará comienzo a las 14:30 con cena y baile hasta bien entrada la noche.</p>
-          <p><a href="#" class="map-link" onclick="event.preventDefault(); showTab('dia');">Consulta toda la logística del traslado en la pestaña «El día»</a></p>
+          <p><a href="#" class="map-link" onclick="event.preventDefault(); showTab('dia');">Para mas información visitar -> «El día»</a></p>
         </div>
         <div class="feature-map">
           <div class="map-frame">
@@ -575,6 +578,27 @@
           <textarea id="rsvpAlergias" name="alergias" rows="3" placeholder="Indicadnos aquí cualquier alergia, intolerancia o condición médica vuestra o de vuestro acompañante"></textarea>
         </div>
 
+        <div class="form-row">
+          <label>Autobuses</label>
+          <p class="hint">Habrá servicio de autobuses entre Málaga y la Hacienda del Álamo. Si preferís ir con vuestro propio coche, la finca dispone de aparcamiento.</p>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="autobus" value="Ida" required> Autobús solo de ida</label>
+            <label class="radio-option"><input type="radio" name="autobus" value="Ida y vuelta"> Autobús de ida y vuelta</label>
+            <label class="radio-option"><input type="radio" name="autobus" value="Vuelta"> Autobús solo de vuelta</label>
+            <label class="radio-option"><input type="radio" name="autobus" value="No, coche propio"> No, iremos en coche propio</label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="rsvpCancion">Una canción que no puede faltar</label>
+          <input type="text" id="rsvpCancion" name="cancion">
+        </div>
+
+        <div class="form-row">
+          <label for="rsvpMensaje">¿Te gustaría dedicarnos unas palabras?</label>
+          <textarea id="rsvpMensaje" name="mensaje" rows="3" placeholder="Escribe aquí lo que quieras contarnos"></textarea>
+        </div>
+
         <button type="submit" class="primary-btn">Confirmar asistencia</button>
         <div class="upload-status" id="rsvpStatus"></div>
       </form>
@@ -593,12 +617,14 @@
       <div class="info-grid">
         <div class="info-block">
           <h3>Alojamiento</h3>
+          <p class="lead">La zona del centro histórico (junto a Calle Granada) sería la opción más cómoda, a un paseo de la iglesia. Os aconsejamos revisar también la oferta de apartamentos en <a href="https://www.booking.com" target="_blank" rel="noopener">Booking</a> o <a href="https://www.airbnb.es" target="_blank" rel="noopener">Airbnb</a>.</p>
           <ul class="info-list">
-            <li><span class="name">Hotel por confirmar</span><span class="meta">Cerca del centro histórico</span></li>
-            <li><span class="name">Hotel por confirmar</span><span class="meta">Cerca de la Hacienda del Álamo</span></li>
-            <li><span class="name">Hotel por confirmar</span><span class="meta">Zona Malagueta / playa</span></li>
+            <li><span class="name">Shanti's Andalusian Rooms</span><span class="meta">Muy cerca de Calle Granada, junto a la Alcazaba</span></li>
+            <li><span class="name">Petit Palace Plaza Málaga</span><span class="meta">Junto a la Catedral y Calle Larios, ~10 min andando de la iglesia</span></li>
+            <li><span class="name">Room Mate Valeria / Vincci Posada del Patio</span><span class="meta">Boutique, en pleno centro histórico</span></li>
           </ul>
-          <p class="note">Pendiente de completar con nuestro listado.</p>
+          <p class="note">Confirmaremos distancias exactas y añadiremos más opciones más adelante.</p>
+          <p class="note">Si vais en coche, os recomendamos reservar plaza de aparcamiento con antelación (por ejemplo en Telpark) y, sobre todo, reservar el alojamiento cuanto antes por la alta demanda de la ciudad en estas fechas.</p>
         </div>
 
         <div class="info-block">
@@ -614,23 +640,14 @@
         <div class="info-block">
           <h3>Dónde comer</h3>
           <ul class="info-list">
-            <li><span class="name">Chiringuitos del Palo / Pedregalejo</span><span class="meta">Espeto de sardinas junto al mar</span></li>
-            <li><span class="name">El Mercado de Atarazanas</span><span class="meta">Tapas y pescaíto frito</span></li>
-            <li><span class="name">Bares de la Zona Centro</span><span class="meta">Vermú y tapeo tradicional malagueño</span></li>
+            <li><span class="name">Casa Lola</span><span class="meta">Tapas y vermú en Calle Granada, a un paso de la iglesia (de los mejor valorados de Málaga)</span></li>
+            <li><span class="name">Hermanos Alba</span><span class="meta">Pescado fresco en Pedregalejo, muy bien valorado</span></li>
+            <li><span class="name">El Pimpi</span><span class="meta">Bodega histórica en Calle Granada, terraza con vistas a la Alcazaba</span></li>
+            <li><span class="name">Doña Inés</span><span class="meta">Cocina mediterránea con estilo</span></li>
           </ul>
-          <p class="note">Iremos añadiendo nuestras recomendaciones concretas más adelante.</p>
+          <p class="note">Casa Lola no coge reservas, solo apunta el nombre en la puerta — id con tiempo. El resto de la lista (Atrezzo, Casa del Guardia, Hotel Matiz...) también nos gusta, iremos completando con más detalle.</p>
         </div>
-
-        <div class="info-block">
-          <h3>Cómo moveros</h3>
-          <ul class="info-list">
-            <li><span class="name">Aeropuerto → Centro</span><span class="meta">Tren de Cercanías línea C1 (Aeropuerto–Málaga Centro-Alameda), o taxi/VTC</span></li>
-            <li><span class="name">Estación de tren María Zambrano</span><span class="meta">En pleno centro, junto al centro comercial Larios</span></li>
-            <li><span class="name">Centro → Hacienda del Álamo</span><span class="meta">Unos 15 minutos en coche o taxi por el Camino de Casabermeja</span></li>
-            <li><span class="name">Dentro de la ciudad</span><span class="meta">Autobuses urbanos EMT y taxi/VTC son la opción más cómoda</span></li>
-          </ul>
-          <p class="note">Confirmaremos horarios y líneas exactas más cerca de la fecha.</p>
-        </div>
+        
       </div>
     </div>
   </div>
@@ -799,7 +816,10 @@
       apellidos: document.getElementById('rsvpApellidos').value.trim(),
       asistencia: (rsvpForm.querySelector('input[name="asistencia"]:checked') || {}).value || '',
       acompanante: conAcompanante.checked ? document.getElementById('rsvpAcompanante').value.trim() : '',
-      alergias: document.getElementById('rsvpAlergias').value.trim()
+      alergias: document.getElementById('rsvpAlergias').value.trim(),
+      autobus: (rsvpForm.querySelector('input[name="autobus"]:checked') || {}).value || '',
+      cancion: document.getElementById('rsvpCancion').value.trim(),
+      mensaje: document.getElementById('rsvpMensaje').value.trim()
     };
 
     rsvpStatus.textContent = 'Enviando...';
@@ -918,6 +938,7 @@
     const overlayText = document.getElementById('gameOverlayText');
     const scoreForm = document.getElementById('scoreForm');
     const scoreStatus = document.getElementById('scoreStatus');
+    const OBSTACLE_EMOJIS = ['🥂', '🍾'];
 
     function resizeCanvas(){
       canvas.width = canvas.clientWidth;
@@ -932,12 +953,24 @@
       groundY = canvas.height - 40;
       player = { x: 40, y: groundY, vy: 0 };
       obstacles = [];
-      spawnTimer = 60;
-      speed = 4;
+      spawnTimer = 70;
+      speed = 3;
       score = 0;
       gameOverFlag = false;
     }
     resetGame();
+
+    function speedForScore(s){
+      let v = 3 + s / 70;
+      if(s > 1000){ v += (s - 1000) / 45; }
+      return Math.min(v, 20);
+    }
+
+    function nextSpawnGap(s){
+      const minGap = Math.max(26, 65 - Math.floor(s / 18));
+      const maxGap = Math.max(42, 95 - Math.floor(s / 12));
+      return minGap + Math.floor(Math.random() * (maxGap - minGap));
+    }
 
     function startGame(){
       resetGame();
@@ -956,25 +989,41 @@
       return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
     }
 
+    function spawnObstacle(){
+      const width = 20 + Math.floor(Math.random() * 22);
+      const emoji = OBSTACLE_EMOJIS[Math.floor(Math.random() * OBSTACLE_EMOJIS.length)];
+      obstacles.push({ x: canvas.width + 10, width, emoji });
+
+      // a partir de cierta puntuación, a veces aparece un obstáculo doble para variar el ritmo
+      if(score > 250 && Math.random() < 0.28){
+        obstacles.push({
+          x: canvas.width + 10 + width + 16,
+          width: 20 + Math.floor(Math.random() * 22),
+          emoji: OBSTACLE_EMOJIS[Math.floor(Math.random() * OBSTACLE_EMOJIS.length)]
+        });
+      }
+    }
+
     function update(){
+      speed = speedForScore(score);
+
       player.vy += 0.7;
       player.y += player.vy;
       if(player.y > groundY){ player.y = groundY; player.vy = 0; }
 
       spawnTimer--;
       if(spawnTimer <= 0){
-        obstacles.push({ x: canvas.width + 10 });
-        spawnTimer = Math.max(38, 75 - Math.floor(score / 4));
+        spawnObstacle();
+        spawnTimer = nextSpawnGap(score);
       }
       obstacles.forEach(o => o.x -= speed);
-      obstacles = obstacles.filter(o => o.x > -30);
+      obstacles = obstacles.filter(o => o.x > -40);
 
-      speed += 0.0025;
       score += 0.15;
 
       const playerBox = { x: player.x - 13, y: player.y - 26, w: 26, h: 26 };
       obstacles.forEach(o => {
-        const obsBox = { x: o.x - 12, y: groundY - 22, w: 24, h: 24 };
+        const obsBox = { x: o.x - o.width / 2, y: groundY - 22, w: o.width, h: 24 };
         if(rectsOverlap(playerBox, obsBox)){ gameOverFlag = true; }
       });
     }
@@ -989,7 +1038,7 @@
 
       ctx.font = '26px sans-serif';
       ctx.fillText('💐', player.x - 13, player.y);
-      obstacles.forEach(o => ctx.fillText('🥂', o.x - 12, groundY));
+      obstacles.forEach(o => ctx.fillText(o.emoji, o.x - 12, groundY));
 
       ctx.fillStyle = '#333F2A';
       ctx.font = "14px 'Jost', sans-serif";
