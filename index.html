@@ -242,6 +242,8 @@
   .info-list li{ padding:12px 0; border-bottom:1px solid var(--line); }
   .info-list li:last-child{ border-bottom:none; }
   .info-list .name{ font-weight:500; display:block; }
+  .info-list .name a{ border-bottom:1px solid var(--gold); padding-bottom:1px; }
+  .hotel-offer .offer{ display:block; margin-top:5px; font-size:0.85rem; color:var(--rust); font-style:italic; }
   .info-list .meta{ font-size:0.85rem; color:var(--olive); }
   .note{ font-size:0.82rem; color:var(--rust); font-style:italic; margin-top:10px; }
   .info-block .lead{ font-size:0.92rem; color:var(--ink); margin-bottom:16px; }
@@ -617,14 +619,51 @@
       <div class="info-grid">
         <div class="info-block">
           <h3>Alojamiento</h3>
-          <p class="lead">La zona del centro histórico (junto a Calle Granada) sería la opción más cómoda, a un paseo de la iglesia. Os aconsejamos revisar también la oferta de apartamentos en <a href="https://www.booking.com" target="_blank" rel="noopener">Booking</a> o <a href="https://www.airbnb.es" target="_blank" rel="noopener">Airbnb</a>.</p>
+          <p class="lead">Os aconsejamos reservar el alojamiento cuanto antes por la alta demanda de la ciudad en estas fechas.</p>
+          <p class="lead">La zona junto a Calle Granada o Plaza de la Merced sería la opción más cómoda, a un paseo de la iglesia. Os aconsejamos revisar también la oferta de apartamentos en <a href="https://www.booking.com" target="_blank" rel="noopener">Booking</a> o <a href="https://www.airbnb.es" target="_blank" rel="noopener">Airbnb</a>.</p>
+          <p style="font-size:0.88rem; color:var(--olive); margin-bottom:14px;">Tenemos acuerdos especiales para nuestros invitados con estos hoteles — mencionad el código indicado al reservar.</p>
           <ul class="info-list">
-            <li><span class="name">Shanti's Andalusian Rooms</span><span class="meta">Muy cerca de Calle Granada, junto a la Alcazaba</span></li>
-            <li><span class="name">Petit Palace Plaza Málaga</span><span class="meta">Junto a la Catedral y Calle Larios, ~10 min andando de la iglesia</span></li>
-            <li><span class="name">Room Mate Valeria / Vincci Posada del Patio</span><span class="meta">Boutique, en pleno centro histórico</span></li>
+            <li class="hotel-offer">
+              <span class="name"><a href="https://www.hotelalcazabapremium.com" target="_blank" rel="noopener">Alcazaba Premium Hotel</a></span>
+              <span class="meta">99 m de la iglesia · ★★ · 8,2/10</span>
+              <span class="offer">Desayuno gratuito con el código #BODAJAVIERYBLANCA (en confirmación)</span>
+            </li>
+            <li class="hotel-offer">
+              <span class="name"><a href="https://www.aluxhotel.com/" target="_blank" rel="noopener">Alux Boutique Hotel</a></span>
+              <span class="meta">140 m de la iglesia · ★★ · 8,7/10</span>
+              <span class="offer">Habitaciones desde 150€/noche con el código "Boda de Javier y Blanca" (oferta en confirmación para 2027)</span>
+            </li>
+            <li class="hotel-offer">
+              <span class="name"><a href="https://hotel-carlosvmalaga.com/" target="_blank" rel="noopener">Hotel Carlos V</a></span>
+              <span class="meta">300 m de la iglesia · ★★ · 8,2/10</span>
+              <span class="offer">277€ por dos noches con el código "Boda de Javier y Blanca" (en confirmación para 2027)</span>
+            </li>
+            <li class="hotel-offer">
+              <span class="name"><a href="https://www.hoteldelpintor.com/" target="_blank" rel="noopener">Hotel del Pintor</a></span>
+              <span class="meta">350 m de la iglesia · ★★★ · 8,7/10</span>
+              <span class="offer">Oferta en preparación — mencionad la boda al escribir</span>
+            </li>
+            <li class="hotel-offer">
+              <span class="name"><a href="https://www.hoteldoncurro.com/" target="_blank" rel="noopener">Hotel Don Curro</a></span>
+              <span class="meta">600 m de la iglesia · ★★★ · 8,4/10</span>
+              <span class="offer">179,1€/noche con desayuno usando el código "Boda de Javier y Blanca"</span>
+            </li>
+            <li class="hotel-offer">
+              <span class="name"><a href="https://www.hotelmalagapremium.com/" target="_blank" rel="noopener">Hotel Málaga Premium</a></span>
+              <span class="meta">700 m de la iglesia · ★★★ · 8,5/10</span>
+              <span class="offer">Desayuno gratuito, código pendiente de confirmar</span>
+            </li>
+            <li class="hotel-offer">
+              <span class="name"><a href="https://www.sercotelhoteles.com/es/hotel-tribuna-malaga" target="_blank" rel="noopener">Hotel Sercotel Tribuna</a></span>
+              <span class="meta">750 m de la iglesia · ★★★ · 8,2/10</span>
+              <span class="offer">10% de descuento con el código BODAJAVIERYBLANCA</span>
+            </li>
+            <li class="hotel-offer">
+              <span class="name"><a href="https://soho-malaga-dot-soho-boutique-hotels.appspot.com/" target="_blank" rel="noopener">Soho Boutique Málaga</a></span>
+              <span class="meta">900 m de la iglesia · ★★★ · 8,3/10 · varios hoteles (Bahía, Málaga, Urban, Los Naranjos)</span>
+              <span class="offer">20% de descuento con el código "BODA BLANCA Y JAVIER"</span>
+            </li>
           </ul>
-          <p class="note">Confirmaremos distancias exactas y añadiremos más opciones más adelante.</p>
-          <p class="note">Si vais en coche, os recomendamos reservar plaza de aparcamiento con antelación (por ejemplo en Telpark) y, sobre todo, reservar el alojamiento cuanto antes por la alta demanda de la ciudad en estas fechas.</p>
         </div>
 
         <div class="info-block">
@@ -632,7 +671,7 @@
           <ul class="info-list">
             <li><span class="name">Alcazaba y Castillo de Gibralfaro</span><span class="meta">Vistas de la bahía y casco histórico</span></li>
             <li><span class="name">Muelle Uno y el puerto</span><span class="meta">Paseo, terrazas y el Centre Pompidou Málaga</span></li>
-            <li><span class="name">Playa de la Malagueta</span><span class="meta">A un paseo del centro</span></li>
+            <li><span class="name">Paseo marítimo de Pedregalejo</span><span class="meta">Chiringuitos, paseo junto al mar y ambiente local</span></li>
             <li><span class="name">Casco histórico y calle Larios</span><span class="meta">Tapeo, compras y ambiente</span></li>
           </ul>
         </div>
@@ -640,12 +679,17 @@
         <div class="info-block">
           <h3>Dónde comer</h3>
           <ul class="info-list">
-            <li><span class="name">Casa Lola</span><span class="meta">Tapas y vermú en Calle Granada, a un paso de la iglesia (de los mejor valorados de Málaga)</span></li>
-            <li><span class="name">Hermanos Alba</span><span class="meta">Pescado fresco en Pedregalejo, muy bien valorado</span></li>
-            <li><span class="name">El Pimpi</span><span class="meta">Bodega histórica en Calle Granada, terraza con vistas a la Alcazaba</span></li>
-            <li><span class="name">Doña Inés</span><span class="meta">Cocina mediterránea con estilo</span></li>
+            <li><span class="name"><a href="https://www.google.com/maps/search/?api=1&query=Casa+Lola+Calle+Granada+Málaga" target="_blank" rel="noopener">Casa Lola</a></span><span class="meta">Tapas y vermú en Calle Granada, a un paso de la iglesia (de los mejor valorados de Málaga, no cogen reservas)</span></li>
+            <li><span class="name"><a href="https://www.google.com/maps/search/?api=1&query=Antigua+Casa+de+Guardia+Málaga" target="_blank" rel="noopener">Antigua Casa de Guardia</a></span><span class="meta">La bodega más antigua de Málaga (1840), vinos de la casa y tapas de marisco</span></li>
+            <li><span class="name"><a href="https://www.google.com/maps/search/?api=1&query=El+Pimpi+Calle+Granada+Málaga" target="_blank" rel="noopener">El Pimpi</a></span><span class="meta">Bodega histórica en Calle Granada, terraza con vistas a la Alcazaba</span></li>
+            <li><span class="name"><a href="https://www.google.com/maps/search/?api=1&query=Restaurante+Merlo+Pedregalejo+Málaga" target="_blank" rel="noopener">Merlo</a></span><span class="meta">Chiringuito clásico en Pedregalejo, espetos y pescaíto frito</span></li>
+            <li><span class="name"><a href="https://www.google.com/maps/search/?api=1&query=Hermanos+Alba+Pedregalejo+Málaga" target="_blank" rel="noopener">Hermanos Alba</a></span><span class="meta">Pescado fresco en Pedregalejo, muy bien valorado</span></li>
+            <li><span class="name"><a href="https://www.google.com/maps/search/?api=1&query=Matiz+Hotel+Molina+Lario+Málaga" target="_blank" rel="noopener">Matiz (Hotel Molina Lario)</a></span><span class="meta">Alta cocina mediterránea en el centro, entre los 100 mejores restaurantes de España</span></li>
+            <li><span class="name"><a href="https://www.google.com/maps/search/?api=1&query=Atrezzo+Restaurante+Soho+Málaga" target="_blank" rel="noopener">Atrezzo</a></span><span class="meta">Cocina italiana en el Soho malagueño</span></li>
+            <li><span class="name"><a href="https://www.google.com/maps/search/?api=1&query=La+Barra+de+Doña+Inés+Málaga" target="_blank" rel="noopener">La Barra de Doña Inés</a></span><span class="meta">Tapas de autor con estilo mediterráneo</span></li>
+            <li><span class="name"><a href="https://www.google.com/maps/search/?api=1&query=Baños+del+Carmen+Málaga" target="_blank" rel="noopener">Baños del Carmen</a></span><span class="meta">Antiguo balneario junto al mar, entorno único para tomar algo</span></li>
           </ul>
-          <p class="note">Casa Lola no coge reservas, solo apunta el nombre en la puerta — id con tiempo. El resto de la lista (Atrezzo, Casa del Guardia, Hotel Matiz...) también nos gusta, iremos completando con más detalle.</p>
+          <p class="note">Casa Lola no coge reservas, solo apunta el nombre en la puerta — id con tiempo.</p>
         </div>
         
       </div>
