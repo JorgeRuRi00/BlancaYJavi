@@ -170,7 +170,9 @@
   .gift-contact .meta{ font-size:0.92rem; color:var(--olive-deep); }
 
   /* ---------- CALENDARIO ---------- */
-  .calendar-cta{ margin-top:28px; display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+  .day-hero-grid{ display:flex; justify-content:space-between; align-items:center; gap:48px; }
+  .day-hero-grid .section-head{ flex:1 1 380px; }
+  .calendar-cta{ margin-top:0; display:flex; align-items:center; gap:22px; flex-shrink:0; }
   .calendar-card{
     width:84px; height:96px; flex-shrink:0; background:var(--paper); border:1px solid var(--line); border-radius:6px;
     display:flex; flex-direction:column; align-items:center; justify-content:center; text-decoration:none;
@@ -245,6 +247,26 @@
   .info-list .name{ font-weight:500; display:block; }
   .info-list .name a{ border-bottom:1px solid var(--gold); padding-bottom:1px; }
   .hotel-offer .offer{ display:block; margin-top:5px; font-size:0.85rem; color:var(--rust); font-style:italic; }
+  .offer-btn{
+    margin-top:8px; display:inline-block; background:none; border:1px solid var(--gold); color:var(--olive-deep);
+    border-radius:999px; padding:6px 16px; font-family:'Jost', sans-serif; font-size:0.8rem; cursor:pointer;
+  }
+  .offer-btn:hover{ background:var(--gold); color:var(--paper); }
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(43,42,34,0.55); z-index:200;
+    display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .modal-overlay.hidden{ display:none; }
+  .modal-box{
+    background:var(--paper); max-width:440px; width:100%; padding:32px; border-radius:4px;
+    position:relative; box-shadow:0 20px 50px rgba(0,0,0,0.3);
+  }
+  .modal-box h3{ font-size:1.6rem; margin-bottom:14px; padding-right:20px; }
+  .modal-box p{ font-size:0.92rem; line-height:1.7; }
+  .modal-close{
+    position:absolute; top:14px; right:18px; background:none; border:none; cursor:pointer;
+    font-size:1.4rem; color:var(--olive); line-height:1;
+  }
   .info-list .meta{ font-size:0.85rem; color:var(--olive); }
   .note{ font-size:0.82rem; color:var(--rust); font-style:italic; margin-top:10px; }
   .info-block .lead{ font-size:0.92rem; color:var(--ink); margin-bottom:16px; }
@@ -313,6 +335,7 @@
   #leaderboardList .rank{ color:var(--gold); font-family:'Cormorant Garamond', serif; font-style:italic; margin-right:8px; }
 
   @media (max-width: 760px){
+    .day-hero-grid{ flex-direction:column; align-items:flex-start; gap:28px; }
     .section{ padding:40px 0; }
     .feature{ display:grid; grid-template-columns:1fr; gap:24px; }
     .feature .feature-media,
@@ -380,11 +403,13 @@
 
   <div class="section">
     <div class="wrap">
-      <div class="section-head">
-        <span class="kicker">El día</span>
-        <h2>Sábado, 1 de mayo de 2027</h2>
-        <p>¡Nos casamos! Y no hay nada que nos haga más ilusión que compartir este día con vosotros, nuestra familia y amigos.</p>
-        <p>Aquí os dejamos toda la información para que no os perdáis detalle.</p>
+      <div class="day-hero-grid">
+        <div class="section-head" style="margin-bottom:0;">
+          <span class="kicker">El día</span>
+          <h2>Sábado, 1 de mayo de 2027</h2>
+          <p>¡Nos casamos! Y no hay nada que nos haga más ilusión que compartir este día con vosotros, nuestra familia y amigos.</p>
+          <p>Aquí os dejamos toda la información para que no os perdáis detalle.</p>
+        </div>
         <div class="calendar-cta">
           <a class="calendar-card" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Boda+de+Blanca+%26+Javi&dates=20270501T100000Z/20270501T220000Z&details=Misa+a+las+12%3A00+en+la+Parroquia+de+Santiago+Ap%C3%B3stol%2C+seguida+de+la+celebraci%C3%B3n+en+la+Hacienda+del+%C3%81lamo.&location=Parroquia+de+Santiago+Ap%C3%B3stol%2C+Calle+Granada+78%2C+M%C3%A1laga" target="_blank" rel="noopener" aria-label="Guardar la fecha en Google Calendar">
             <span class="calendar-card-month">Mayo</span>
@@ -399,6 +424,7 @@
       </div>
     </div>
   </div>
+
 
   <div class="section">
     <div class="wrap">
@@ -432,8 +458,7 @@
           <span class="kicker-inline">La celebración</span>
           <h3>Hacienda del Álamo</h3>
           <p class="addr">Camino de Casabermeja, 130 · Málaga</p>
-          <p>Después de la ceremonia nos trasladaremos a esta finca del siglo XIX, rodeada de jardines centenarios y situada a quince minutos del centro de Málaga, donde la celebración dará comienzo a las 14:30 con cena y baile hasta bien entrada la noche.</p>
-          <p><a href="#" class="map-link" onclick="event.preventDefault(); showTab('dia');">Para mas información visitar -> «El día»</a></p>
+          <p>Después de la ceremonia nos trasladaremos a esta finca del siglo XIX, rodeada de jardines centenarios y situada a quince minutos del centro de Málaga, donde la celebración dará comienzo a las 14:30.</p>
         </div>
         <div class="feature-map">
           <div class="map-frame">
@@ -482,52 +507,62 @@
       </div>
 
       <svg class="day-illustration" viewBox="0 0 1000 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <!-- línea de suelo / camino -->
-        <path d="M0,145 Q60,118 130,140 L205,150 L335,150 Q380,158 430,150 L530,150 Q555,142 585,150 L885,150 Q935,125 1000,148" />
-        <path d="M335,148 Q380,142 430,148" stroke-dasharray="4 6" />
-        <path d="M530,148 Q555,144 585,148" stroke-dasharray="4 6" />
+        <!-- camino ascendente -->
+        <path d="M0,150 L260,150 Q470,145 660,95 L1000,95" />
 
-        <!-- iglesia -->
-        <path d="M255,60 L270,28 L285,60" />
-        <line x1="270" y1="28" x2="270" y2="10" />
-        <line x1="261" y1="17" x2="279" y2="17" />
-        <rect x="253" y="60" width="34" height="60" />
-        <circle cx="270" cy="80" r="6" />
-        <path d="M205,150 L205,108 L335,108 L335,150" />
-        <path d="M255,150 L255,128 A15,15 0 0 1 285,128 L285,150" />
-        <line x1="222" y1="130" x2="222" y2="150" />
-        <line x1="318" y1="130" x2="318" y2="150" />
+        <!-- iglesia (abajo, al pie de la cuesta) -->
+        <path d="M205,60 L220,28 L235,60" />
+        <line x1="220" y1="28" x2="220" y2="10" />
+        <line x1="211" y1="17" x2="229" y2="17" />
+        <rect x="203" y="60" width="34" height="60" />
+        <circle cx="220" cy="80" r="6" />
+        <path d="M155,150 L155,108 L285,108 L285,150" />
+        <path d="M205,150 L205,128 A15,15 0 0 1 235,128 L235,150" />
+        <line x1="172" y1="130" x2="172" y2="150" />
+        <line x1="268" y1="130" x2="268" y2="150" />
 
-        <!-- autobús (ruedas apoyadas justo en el suelo) -->
-        <rect x="430" y="104" width="100" height="38" rx="8" />
-        <line x1="430" y1="124" x2="530" y2="124" />
-        <line x1="452" y1="104" x2="452" y2="124" />
-        <line x1="474" y1="104" x2="474" y2="124" />
-        <line x1="496" y1="104" x2="496" y2="124" />
-        <line x1="518" y1="104" x2="518" y2="124" />
-        <circle cx="452" cy="142" r="8" />
-        <circle cx="508" cy="142" r="8" />
+        <!-- autobús, subiendo la cuesta -->
+        <g transform="translate(450,132) rotate(-9)">
+          <rect x="-50" y="-42" width="100" height="34" rx="8" />
+          <line x1="-50" y1="-22" x2="50" y2="-22" />
+          <line x1="-28" y1="-42" x2="-28" y2="-22" />
+          <line x1="-6" y1="-42" x2="-6" y2="-22" />
+          <line x1="16" y1="-42" x2="16" y2="-22" />
+          <line x1="38" y1="-42" x2="38" y2="-22" />
+          <circle cx="-28" cy="-8" r="8" />
+          <circle cx="28" cy="-8" r="8" />
+        </g>
 
-        <!-- hacienda del álamo -->
-        <!-- cipreses -->
-        <path d="M578,150 Q568,100 585,68 Q602,100 592,150 Z" />
-        <line x1="585" y1="150" x2="585" y2="158" />
-        <path d="M878,150 Q868,100 885,68 Q902,100 892,150 Z" />
-        <line x1="885" y1="150" x2="885" y2="158" />
+        <!-- hacienda del álamo (arriba de la cuesta) -->
+        <path d="M628,95 Q618,55 635,25 Q652,55 642,95 Z" />
+        <line x1="635" y1="95" x2="635" y2="103" />
+        <path d="M965,95 Q955,55 972,25 Q989,55 979,95 Z" />
+        <line x1="972" y1="95" x2="972" y2="103" />
 
-        <!-- fachada -->
-        <rect x="600" y="95" width="270" height="55" />
-        <path d="M600,95 L700,95 L735,68 L770,95 L870,95" />
+        <!-- ala baja izquierda -->
+        <rect x="655" y="70" width="165" height="25" />
+        <path d="M650,70 L737,50 L825,70" />
+        <path d="M665,95 Q685,72 705,95" />
+        <rect x="662" y="76" width="13" height="19" />
+        <line x1="666" y1="76" x2="666" y2="95" />
+        <rect x="795" y="76" width="13" height="19" />
+        <line x1="799" y1="76" x2="799" y2="95" />
+        <circle cx="682" cy="91" r="4" />
+        <line x1="682" y1="91" x2="682" y2="95" />
+        <circle cx="722" cy="91" r="4" />
+        <line x1="722" y1="91" x2="722" y2="95" />
 
-        <!-- puerta y ventanas -->
-        <path d="M718,150 L718,118 A17,17 0 0 1 752,118 L752,150" />
-        <path d="M650,140 L650,110 A15,15 0 0 1 680,110 L680,140" />
-        <path d="M790,140 L790,110 A15,15 0 0 1 820,110 L820,140" />
-        <rect x="657" y="100" width="16" height="14" />
-        <rect x="797" y="100" width="16" height="14" />
-
-        <!-- seto bajo -->
-        <path d="M600,150 q17,-9 35,0 q17,-9 35,0 q17,-9 35,0 q17,-9 35,0 q17,-9 35,0 q17,-9 35,0 q17,-9 35,0" />
+        <!-- ala alta derecha -->
+        <rect x="820" y="35" width="130" height="60" />
+        <path d="M810,35 L885,8 L960,35" />
+        <rect x="850" y="18" width="16" height="14" />
+        <line x1="855" y1="18" x2="855" y2="32" />
+        <rect x="908" y="18" width="16" height="14" />
+        <line x1="913" y1="18" x2="913" y2="32" />
+        <rect x="850" y="45" width="16" height="28" />
+        <line x1="855" y1="45" x2="855" y2="73" />
+        <rect x="908" y="45" width="16" height="28" />
+        <line x1="913" y1="45" x2="913" y2="73" />
       </svg>
 
       <div class="timeline">
@@ -641,7 +676,7 @@
       <div class="section-head">
         <span class="kicker">Para vuestra visita</span>
         <h2>Información útil</h2>
-        <p>Os dejamos aquí todo lo que necesitáis para organizar vuestra estancia en Málaga: dónde dormir, qué hacer y cómo moveros.</p>
+        <p>Os dejamos aquí todo lo que necesitáis para organizar vuestra estancia en Málaga: alojamiento, qué hacer y dónde comer.</p>
       </div>
 
       <div class="info-grid">
@@ -652,44 +687,29 @@
           <p style="font-size:0.88rem; color:var(--olive); margin-bottom:14px;">Tenemos acuerdos especiales para nuestros invitados con estos hoteles — mencionad el código indicado al reservar.</p>
           <ul class="info-list">
             <li class="hotel-offer">
-              <span class="name"><a href="https://www.hotelalcazabapremium.com" target="_blank" rel="noopener">Alcazaba Premium Hotel</a></span>
-              <span class="meta">99 m de la iglesia · ★★ · 8,2/10</span>
-              <span class="offer">Desayuno gratuito con el código #BODAJAVIERYBLANCA (en confirmación)</span>
-            </li>
-            <li class="hotel-offer">
               <span class="name"><a href="https://www.aluxhotel.com/" target="_blank" rel="noopener">Alux Boutique Hotel</a></span>
-              <span class="meta">140 m de la iglesia · ★★ · 8,7/10</span>
-              <span class="offer">Habitaciones desde 150€/noche con el código "Boda de Javier y Blanca" (oferta en confirmación para 2027)</span>
+              <span class="meta">140 m de la iglesia · ★★</span>
+              <button type="button" class="offer-btn" onclick="showOffer('alux')">Ver mejoras/descuentos</button>
             </li>
             <li class="hotel-offer">
               <span class="name"><a href="https://hotel-carlosvmalaga.com/" target="_blank" rel="noopener">Hotel Carlos V</a></span>
-              <span class="meta">300 m de la iglesia · ★★ · 8,2/10</span>
-              <span class="offer">277€ por dos noches con el código "Boda de Javier y Blanca" (en confirmación para 2027)</span>
-            </li>
-            <li class="hotel-offer">
-              <span class="name"><a href="https://www.hoteldelpintor.com/" target="_blank" rel="noopener">Hotel del Pintor</a></span>
-              <span class="meta">350 m de la iglesia · ★★★ · 8,7/10</span>
-              <span class="offer">Oferta en preparación — mencionad la boda al escribir</span>
+              <span class="meta">300 m de la iglesia · ★★</span>
+              <button type="button" class="offer-btn" onclick="showOffer('carlosv')">Ver mejoras/descuentos</button>
             </li>
             <li class="hotel-offer">
               <span class="name"><a href="https://www.hoteldoncurro.com/" target="_blank" rel="noopener">Hotel Don Curro</a></span>
-              <span class="meta">600 m de la iglesia · ★★★ · 8,4/10</span>
-              <span class="offer">179,1€/noche con desayuno usando el código "Boda de Javier y Blanca"</span>
-            </li>
-            <li class="hotel-offer">
-              <span class="name"><a href="https://www.hotelmalagapremium.com/" target="_blank" rel="noopener">Hotel Málaga Premium</a></span>
-              <span class="meta">700 m de la iglesia · ★★★ · 8,5/10</span>
-              <span class="offer">Desayuno gratuito, código pendiente de confirmar</span>
+              <span class="meta">600 m de la iglesia · ★★★</span>
+              <button type="button" class="offer-btn" onclick="showOffer('doncurro')">Ver mejoras/descuentos</button>
             </li>
             <li class="hotel-offer">
               <span class="name"><a href="https://www.sercotelhoteles.com/es/hotel-tribuna-malaga" target="_blank" rel="noopener">Hotel Sercotel Tribuna</a></span>
-              <span class="meta">750 m de la iglesia · ★★★ · 8,2/10</span>
-              <span class="offer">10% de descuento con el código BODAJAVIERYBLANCA</span>
+              <span class="meta">750 m de la iglesia · ★★★</span>
+              <button type="button" class="offer-btn" onclick="showOffer('tribuna')">Ver mejoras/descuentos</button>
             </li>
             <li class="hotel-offer">
               <span class="name"><a href="https://soho-malaga-dot-soho-boutique-hotels.appspot.com/" target="_blank" rel="noopener">Soho Boutique Málaga</a></span>
-              <span class="meta">900 m de la iglesia · ★★★ · 8,3/10 · varios hoteles (Bahía, Málaga, Urban, Los Naranjos)</span>
-              <span class="offer">20% de descuento con el código "BODA BLANCA Y JAVIER"</span>
+              <span class="meta">900 m de la iglesia · ★★★ · varios hoteles</span>
+              <button type="button" class="offer-btn" onclick="showOffer('soho')">Ver mejoras/descuentos</button>
             </li>
           </ul>
         </div>
@@ -800,6 +820,14 @@
     </div>
   </div>
 </section>
+
+<div class="modal-overlay hidden" id="offerModal">
+  <div class="modal-box">
+    <button class="modal-close" id="offerModalClose" aria-label="Cerrar">&times;</button>
+    <h3 id="offerModalTitle"></h3>
+    <p id="offerModalBody"></p>
+  </div>
+</div>
 
 <footer>
   Con todo nuestro cariño, Blanca &amp; Javi · 1 de mayo de 2027
@@ -938,6 +966,44 @@
       rsvpStatus.classList.add('error');
       console.error(err);
     }
+  });
+
+  // ---- Ventana emergente de ofertas de hotel ----
+  const HOTEL_OFFERS = {
+    alux: {
+      title: 'Alux Boutique Hotel',
+      body: '1 Budget Queen Room – 150€/noche<br>2 Standard Queen Room – 160€/noche<br>2 Queen Room with Terrace – 172€/noche<br>1 Queen Room accesible (máx. 3 personas) – 180€/noche<br>4 Junior Suite (máx. 3 personas) – 194€/noche<br>1 Junior Suite (máx. 3 personas) – 200€/noche<br><br>Para reservar: escribid a <a href="mailto:info@alux-hotel.com">info@alux-hotel.com</a> con el código "Boda de Blanca y Javier".'
+    },
+    carlosv: {
+      title: 'Hotel Carlos V',
+      body: '277€ por dos noches.<br><br>Para reservar: escribid a <a href="mailto:info@hotel-carlosvmalaga.com">info@hotel-carlosvmalaga.com</a> con el código "Boda de Blanca y Javier".'
+    },
+    doncurro: {
+      title: 'Hotel Don Curro',
+      body: '358,20€ por dos noches.<br><br>Para reservar: escribid a <a href="mailto:reservas@hoteldoncurro.com">reservas@hoteldoncurro.com</a> con el código "Boda de Blanca y Javier".'
+    },
+    tribuna: {
+      title: 'Hotel Sercotel Tribuna',
+      body: '10% de descuento.<br><br>Para reservar: en <a href="https://www.sercotelhoteles.com/es/hotel-tribuna-malaga" target="_blank" rel="noopener">sercotelhoteles.com</a> con el código BODAJAVIERYBLANCA.'
+    },
+    soho: {
+      title: 'Soho Boutique Málaga',
+      body: '20% de descuento en todos sus hoteles: Soho Bahía Málaga****, Soho Málaga***, Soho Urban***, Soho Los Naranjos***.<br><br>Para reservar: escribid a <a href="mailto:info@sohohoteles.com">info@sohohoteles.com</a> con el código "BODA BLANCA Y JAVIER".'
+    }
+  };
+
+  function showOffer(key){
+    const o = HOTEL_OFFERS[key];
+    if(!o) return;
+    document.getElementById('offerModalTitle').textContent = o.title;
+    document.getElementById('offerModalBody').innerHTML = o.body;
+    document.getElementById('offerModal').classList.remove('hidden');
+  }
+  document.getElementById('offerModalClose').addEventListener('click', () => {
+    document.getElementById('offerModal').classList.add('hidden');
+  });
+  document.getElementById('offerModal').addEventListener('click', (e) => {
+    if(e.target.id === 'offerModal'){ e.target.classList.add('hidden'); }
   });
 
   // ---- Photo upload ----
