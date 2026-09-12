@@ -117,7 +117,7 @@
   .hero .amp{ color:var(--gold); }
   .hero-meta{ margin-top:22px; font-size:1.05rem; display:flex; gap:22px; flex-wrap:wrap; align-items:baseline; }
   .hero-meta strong{ font-weight:500; }
-  .countdown-line{ margin-top:16px; font-size:0.9rem; opacity:0.85; font-style:italic; font-family:'Cormorant Garamond', serif; }
+  .countdown-line{ margin-top:18px; font-size:1.5rem; opacity:1; font-style:italic; font-family:'Cormorant Garamond', serif; text-shadow:0 2px 10px rgba(0,0,0,0.45); }
 
   /* ---------- SECTIONS ---------- */
   .section{ padding:60px 0; }
@@ -239,7 +239,12 @@
   .gallery-empty{ font-style:italic; font-family:'Cormorant Garamond', serif; color:var(--olive); opacity:0.8; }
 
   /* ---------- INFO ÚTIL ---------- */
+  .info-photo{ max-width:600px; margin:0 auto 48px; border-radius:2px; overflow:hidden; }
+  .info-photo img{ width:100%; display:block; }
   .info-grid{ display:grid; grid-template-columns:1fr 1fr; gap:56px; }
+  .info-grid .info-block:nth-child(1){ grid-column:1; grid-row:1 / 3; }
+  .info-grid .info-block:nth-child(2){ grid-column:2; grid-row:1; }
+  .info-grid .info-block:nth-child(3){ grid-column:2; grid-row:2; }
   .info-block h3{ font-size:1.6rem; margin-bottom:16px; border-bottom:1px solid var(--line); padding-bottom:10px;}
   .info-list{ list-style:none; margin:0; padding:0; }
   .info-list li{ padding:12px 0; border-bottom:1px solid var(--line); }
@@ -268,6 +273,7 @@
     font-size:1.4rem; color:var(--olive); line-height:1;
   }
   .info-list .meta{ font-size:0.85rem; color:var(--olive); }
+  .meta-sub{ display:block; font-size:0.8rem; color:var(--olive); font-style:italic; margin-top:2px; }
   .note{ font-size:0.82rem; color:var(--rust); font-style:italic; margin-top:10px; }
   .info-block .lead{ font-size:0.92rem; color:var(--ink); margin-bottom:16px; }
   .info-block .lead a{ color:var(--olive-deep); border-bottom:1px solid var(--gold); }
@@ -345,6 +351,9 @@
     .feature .feature-map,
     .feature.reverse .feature-map{ order:3; }
     .info-grid{ grid-template-columns:1fr; }
+    .info-grid .info-block:nth-child(1),
+    .info-grid .info-block:nth-child(2),
+    .info-grid .info-block:nth-child(3){ grid-column:auto; grid-row:auto; }
 
     .tabs-inner{ flex-wrap:wrap; padding:12px 20px; row-gap:10px; }
     .tab-links{
@@ -458,7 +467,7 @@
           <span class="kicker-inline">La celebración</span>
           <h3>Hacienda del Álamo</h3>
           <p class="addr">Camino de Casabermeja, 130 · Málaga</p>
-          <p>Después de la ceremonia nos trasladaremos a esta finca del siglo XIX, rodeada de jardines centenarios y situada a quince minutos del centro de Málaga, donde la celebración dará comienzo a las 14:30.</p>
+          <p>Después de la ceremonia nos trasladaremos a esta finca del siglo XIX, rodeada de jardines centenarios y situada a quince minutos del centro de Málaga, donde la celebración dará comienzo a las 14:00.</p>
         </div>
         <div class="feature-map">
           <div class="map-frame">
@@ -506,7 +515,7 @@
         <h2>Cómo va a ir el día</h2>
       </div>
 
-      <svg class="day-illustration" viewBox="0 0 1000 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <svg class="day-illustration" viewBox="130 0 870 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <!-- camino ascendente -->
         <path d="M0,150 L260,150 Q470,145 660,95 L1000,95" />
 
@@ -533,36 +542,32 @@
           <circle cx="28" cy="-8" r="8" />
         </g>
 
-        <!-- hacienda del álamo (arriba de la cuesta) -->
-        <path d="M628,95 Q618,55 635,25 Q652,55 642,95 Z" />
-        <line x1="635" y1="95" x2="635" y2="103" />
-        <path d="M965,95 Q955,55 972,25 Q989,55 979,95 Z" />
-        <line x1="972" y1="95" x2="972" y2="103" />
+        <!-- hacienda del álamo (arriba de la cuesta): dos casitas laterales + casa señorial central -->
+        <path d="M608,95 Q598,55 615,25 Q632,55 622,95 Z" />
+        <line x1="615" y1="95" x2="615" y2="103" />
+        <path d="M983,95 Q973,55 990,25 Q1007,55 997,95 Z" />
+        <line x1="990" y1="95" x2="990" y2="103" />
 
-        <!-- ala baja izquierda -->
-        <rect x="655" y="70" width="165" height="25" />
-        <path d="M650,70 L737,50 L825,70" />
-        <path d="M665,95 Q685,72 705,95" />
-        <rect x="662" y="76" width="13" height="19" />
-        <line x1="666" y1="76" x2="666" y2="95" />
-        <rect x="795" y="76" width="13" height="19" />
-        <line x1="799" y1="76" x2="799" y2="95" />
-        <circle cx="682" cy="91" r="4" />
-        <line x1="682" y1="91" x2="682" y2="95" />
-        <circle cx="722" cy="91" r="4" />
-        <line x1="722" y1="91" x2="722" y2="95" />
+        <!-- ala izquierda -->
+        <rect x="640" y="68" width="105" height="27" />
+        <path d="M635,68 L692,52 L748,68" />
+        <rect x="683" y="76" width="16" height="19" />
+        <line x1="691" y1="76" x2="691" y2="95" />
 
-        <!-- ala alta derecha -->
-        <rect x="820" y="35" width="130" height="60" />
-        <path d="M810,35 L885,8 L960,35" />
-        <rect x="850" y="18" width="16" height="14" />
-        <line x1="855" y1="18" x2="855" y2="32" />
-        <rect x="908" y="18" width="16" height="14" />
-        <line x1="913" y1="18" x2="913" y2="32" />
-        <rect x="850" y="45" width="16" height="28" />
-        <line x1="855" y1="45" x2="855" y2="73" />
-        <rect x="908" y="45" width="16" height="28" />
-        <line x1="913" y1="45" x2="913" y2="73" />
+        <!-- casa señorial central -->
+        <rect x="745" y="45" width="120" height="50" />
+        <path d="M740,45 L805,15 L870,45" />
+        <path d="M793,95 L793,63 A12,12 0 0 1 817,63 L817,95" />
+        <rect x="760" y="53" width="16" height="18" />
+        <line x1="768" y1="53" x2="768" y2="71" />
+        <rect x="830" y="53" width="16" height="18" />
+        <line x1="838" y1="53" x2="838" y2="71" />
+
+        <!-- ala derecha -->
+        <rect x="865" y="68" width="105" height="27" />
+        <path d="M860,68 L917,52 L973,68" />
+        <rect x="908" y="76" width="16" height="19" />
+        <line x1="916" y1="76" x2="916" y2="95" />
       </svg>
 
       <div class="timeline">
@@ -578,7 +583,7 @@
         </div>
         <div class="timeline-item">
           <span class="timeline-time">14:00 - 14:30</span>
-          <h3>La ceremonia</h3>
+          <h3>La celebración</h3>
           <p>Hacienda del Álamo (Camino de Casabermeja, 130).</p>
         </div>
         <div class="timeline-item">
@@ -679,6 +684,11 @@
         <p>Os dejamos aquí todo lo que necesitáis para organizar vuestra estancia en Málaga: alojamiento, qué hacer y dónde comer.</p>
       </div>
 
+      <div class="info-photo">
+        <img src="images/malaga.jpeg" alt="Málaga">
+      </div>
+
+
       <div class="info-grid">
         <div class="info-block">
           <h3>Alojamiento</h3>
@@ -708,7 +718,8 @@
             </li>
             <li class="hotel-offer">
               <span class="name"><a href="https://soho-malaga-dot-soho-boutique-hotels.appspot.com/" target="_blank" rel="noopener">Soho Boutique Málaga</a></span>
-              <span class="meta">900 m de la iglesia · ★★★ · varios hoteles</span>
+              <span class="meta">900 m de la iglesia · ★★★</span>
+              <span class="meta-sub">varios hoteles</span>
               <button type="button" class="offer-btn" onclick="showOffer('soho')">Ver mejoras/descuentos</button>
             </li>
           </ul>
@@ -733,9 +744,6 @@
             <li><span class="name"><a href="https://www.google.com/maps/search/?api=1&query=Restaurante+Merlo+Pedregalejo+Málaga" target="_blank" rel="noopener">Merlo</a></span><span class="meta">Chiringuito clásico en Pedregalejo, espetos y pescaíto frito</span></li>
             <li><span class="name"><a href="https://www.google.com/maps/search/?api=1&query=Hermanos+Alba+Pedregalejo+Málaga" target="_blank" rel="noopener">Hermanos Alba</a></span><span class="meta">Pescado fresco en Pedregalejo, muy bien valorado</span></li>
             <li><span class="name"><a href="https://www.google.com/maps/search/?api=1&query=Matiz+Hotel+Molina+Lario+Málaga" target="_blank" rel="noopener">Matiz (Hotel Molina Lario)</a></span><span class="meta">Alta cocina mediterránea en el centro, entre los 100 mejores restaurantes de España</span></li>
-            <li><span class="name"><a href="https://www.google.com/maps/search/?api=1&query=Atrezzo+Restaurante+Soho+Málaga" target="_blank" rel="noopener">Atrezzo</a></span><span class="meta">Cocina italiana en el Soho malagueño</span></li>
-            <li><span class="name"><a href="https://www.google.com/maps/search/?api=1&query=La+Barra+de+Doña+Inés+Málaga" target="_blank" rel="noopener">La Barra de Doña Inés</a></span><span class="meta">Tapas de autor con estilo mediterráneo</span></li>
-            <li><span class="name"><a href="https://www.google.com/maps/search/?api=1&query=Baños+del+Carmen+Málaga" target="_blank" rel="noopener">Baños del Carmen</a></span><span class="meta">Antiguo balneario junto al mar, entorno único para tomar algo</span></li>
           </ul>
         </div>
         
