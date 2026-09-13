@@ -303,6 +303,21 @@
     padding:10px 20px; cursor:pointer; font-size:0.92rem; background:var(--paper);
   }
   .turno-option input{ accent-color:var(--olive-deep); }
+  .companions-container{ display:flex; flex-direction:column; gap:10px; margin-bottom:12px; }
+  .companion-row{ display:flex; gap:8px; align-items:center; }
+  .companion-row input{
+    flex:1; padding:12px 14px; border:1px solid var(--line); border-radius:2px;
+    background:var(--paper); font-family:'Jost', sans-serif; font-size:0.95rem; color:var(--ink);
+  }
+  .companion-remove{
+    background:none; border:none; color:var(--rust); font-size:1.4rem; line-height:1;
+    cursor:pointer; padding:0 6px; flex-shrink:0;
+  }
+  .add-companion-btn{
+    background:none; border:1px dashed var(--olive-soft); color:var(--olive-deep);
+    border-radius:999px; padding:8px 18px; font-family:'Jost', sans-serif; font-size:0.85rem; cursor:pointer;
+  }
+  .add-companion-btn:hover{ background:var(--paper); }
 
   footer{ text-align:center; padding:48px 28px; font-family:'Cormorant Garamond', serif; font-style:italic; color:var(--olive); }
 
@@ -525,7 +540,7 @@
         <h2>Cómo va a ir el día</h2>
       </div>
 
-      <svg class="day-illustration" viewBox="155 0 850 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <svg class="day-illustration" viewBox="155 0 850 220" preserveAspectRatio="xMinYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <!-- camino ascendente -->
         <path d="M0,150 L260,150 Q470,145 660,95 L1000,95" />
 
@@ -640,8 +655,9 @@
           </div>
 
           <div class="form-row hidden" id="acompananteRow">
-            <label for="rsvpAcompanante">Nombre y apellidos del acompañante</label>
-            <input type="text" id="rsvpAcompanante" name="acompanante">
+            <label>Nombre y apellidos del acompañante</label>
+            <div id="companionsContainer" class="companions-container"></div>
+            <button type="button" id="addCompanionBtn" class="add-companion-btn">+ Añadir otro acompañante</button>
           </div>
 
           <div class="form-row">
@@ -783,7 +799,7 @@
         <img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https%3A%2F%2Fblancayjavi.es%2F%23recuerdos" alt="Código QR para subir fotos">
         <div>
           <h3 style="font-size:1.3rem;">Código QR para el día de la boda</h3>
-          <p style="font-size:0.9rem; margin:8px 0 0;">Escanea este código con el móvil el día de la boda para subir tus fotos directamente aquí. Imprímelo y ponlo en cada mesa.</p>
+          <p style="font-size:0.9rem; margin:8px 0 0;">Escanea este código con el móvil el día de la boda para subir tus fotos directamente aquí.</p>
         </div>
       </div>
 
@@ -938,9 +954,25 @@
     });
   });
 
+  function addCompanionRow(){
+    const container = document.getElementById('companionsContainer');
+    const row = document.createElement('div');
+    row.className = 'companion-row';
+    row.innerHTML = '<input type="text" class="companion-input" placeholder="Nombre y apellidos">' +
+      '<button type="button" class="companion-remove" aria-label="Quitar acompañante">&times;</button>';
+    row.querySelector('.companion-remove').addEventListener('click', () => row.remove());
+    container.appendChild(row);
+  }
+  document.getElementById('addCompanionBtn').addEventListener('click', addCompanionRow);
+
   conAcompanante.addEventListener('change', () => {
     acompananteRow.classList.toggle('hidden', !conAcompanante.checked);
-    if(!conAcompanante.checked){ document.getElementById('rsvpAcompanante').value = ''; }
+    const container = document.getElementById('companionsContainer');
+    if(conAcompanante.checked){
+      if(container.children.length === 0){ addCompanionRow(); }
+    }else{
+      container.innerHTML = '';
+    }
   });
 
   rsvpForm.addEventListener('submit', async (e) => {
@@ -958,7 +990,9 @@
       nombre: document.getElementById('rsvpNombre').value.trim(),
       apellidos: document.getElementById('rsvpApellidos').value.trim(),
       asistencia: (rsvpForm.querySelector('input[name="asistencia"]:checked') || {}).value || '',
-      acompanante: conAcompanante.checked ? document.getElementById('rsvpAcompanante').value.trim() : '',
+      acompanante: conAcompanante.checked
+        ? Array.from(document.querySelectorAll('.companion-input')).map(i => i.value.trim()).filter(Boolean).join('; ')
+        : '',
       alergias: document.getElementById('rsvpAlergias').value.trim(),
       autobus: (rsvpForm.querySelector('input[name="autobus"]:checked') || {}).value || '',
       turnoVuelta: (rsvpForm.querySelector('input[name="turnoVuelta"]:checked') || {}).value || '',
@@ -978,6 +1012,7 @@
         rsvpStatus.textContent = '¡Gracias! Hemos recibido vuestra confirmación.';
         rsvpForm.reset();
         acompananteRow.classList.add('hidden');
+        document.getElementById('companionsContainer').innerHTML = '';
         attendingExtras.classList.add('hidden');
         turnoVueltaRow.classList.add('hidden');
       }else{
