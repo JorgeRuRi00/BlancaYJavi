@@ -1156,25 +1156,30 @@
 
   function uploadOne(file, item){
     return new Promise((resolve) => {
-      fileToBase64(file).then((base64) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', APPS_SCRIPT_URL, true);
-        xhr.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
-        xhr.timeout = 90000; // 90s: si tarda más que esto, se avisa en vez de quedarse colgado
-        xhr.upload.onprogress = (e) => {
-          if(e.lengthComputable){ item.setProgress(Math.round((e.loaded / e.total) * 100)); }
-        };
-        xhr.onload = () => {
-          try{
-            const result = JSON.parse(xhr.responseText);
-            if(result.success){ item.setDone(); resolve(true); }
-            else{ item.setError(result.error); resolve(false); }
-          }catch(err){ item.setError('Respuesta inesperada del servidor'); resolve(false); }
-        };
-        xhr.onerror = () => { item.setError('Error de conexión'); resolve(false); };
-        xhr.ontimeout = () => { item.setError('Tardó demasiado — prueba otra vez con mejor cobertura'); resolve(false); };
-        xhr.send(JSON.stringify({ filename: file.name, mimeType: file.type, file: base64 }));
-      }).catch(() => { item.setError('No se pudo leer el archivo'); resolve(false); });
+      let pct = 0;
+      const ticker = setInterval(() => {
+        pct = Math.min(pct + (pct < 60 ? 8 : 3), 90);
+        item.setProgress(pct);
+      }, 250);
+
+      fileToBase64(file)
+        .then((base64) => fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ filename: file.name, mimeType: file.type, file: base64 })
+        }))
+        .then((res) => res.json())
+        .then((result) => {
+          clearInterval(ticker);
+          if(result.success){ item.setDone(); resolve(true); }
+          else{ item.setError(result.error); resolve(false); }
+        })
+        .catch((err) => {
+          clearInterval(ticker);
+          item.setError('Error al subir. Comprueba la conexión.');
+          console.error(err);
+          resolve(false);
+        });
     });
   }
 
