@@ -342,6 +342,11 @@
   .game-overlay.hidden{ display:none; }
   #leaderboardList .rank{ color:var(--gold); font-family:'Cormorant Garamond', serif; font-style:italic; margin-right:8px; }
 
+  @media (min-width: 761px){
+    .wide-head{ max-width:none; }
+    .wide-head p{ white-space:nowrap; }
+  }
+
   @media (max-width: 760px){
     .day-hero-grid{ flex-direction:column; align-items:flex-start; gap:28px; }
     .section{ padding:40px 0; }
@@ -431,7 +436,7 @@
             <span class="calendar-card-year">2027</span>
           </a>
           <div class="calendar-cta-text">
-            <span class="calendar-cta-label">Guarda la fecha</span>
+            <span class="calendar-cta-label">Guardad la fecha</span>
             <a class="map-link" href="boda-blanca-javi.ics" download>Añadir a Apple Calendar / Outlook</a>
           </div>
         </div>
@@ -520,7 +525,7 @@
         <h2>Cómo va a ir el día</h2>
       </div>
 
-      <svg class="day-illustration" viewBox="153 0 852 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <svg class="day-illustration" viewBox="155 0 850 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <!-- camino ascendente -->
         <path d="M0,150 L260,150 Q470,145 660,95 L1000,95" />
 
@@ -605,7 +610,7 @@
 <section class="tab-panel" id="panel-rsvp">
   <div class="section" style="padding-top:56px;">
     <div class="wrap">
-      <div class="section-head">
+      <div class="section-head wide-head">
         <span class="kicker">RSVP</span>
         <h2>Confirma tu asistencia</h2>
         <p>Nos haría mucha ilusión contar con vosotros. Ayudadnos a organizarlo todo confirmando antes del <strong>1 de marzo de 2027</strong>.</p>
@@ -760,7 +765,7 @@
 <section class="tab-panel" id="panel-recuerdos">
   <div class="section" style="padding-top:56px;">
     <div class="wrap">
-      <div class="section-head">
+      <div class="section-head wide-head">
         <span class="kicker">Recuerdos</span>
         <h2>Ayúdanos a guardar el día</h2>
         <p>Nos encantaría ver la boda a través de vuestros ojos. Subid aquí las fotos y vídeos que hagáis durante el día para que podamos guardarlos todos juntos.</p>
@@ -775,10 +780,10 @@
       </div>
 
       <div class="qr-box">
-        <img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https%3A%2F%2Fejemplo-boda-blanca-javi.com%2F%23recuerdos" alt="Código QR para subir fotos">
+        <img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https%3A%2F%2Fblancayjavi.es%2F%23recuerdos" alt="Código QR para subir fotos">
         <div>
           <h3 style="font-size:1.3rem;">Código QR para el día de la boda</h3>
-          <p style="font-size:0.9rem; margin:8px 0 0;">Este QR lleva directamente a esta pestaña. En cuanto publiquéis la web en su dirección definitiva, actualizad el enlace del QR (ver <code>README.md</code>) e imprimidlo en las mesas.</p>
+          <p style="font-size:0.9rem; margin:8px 0 0;">Escanea este código con el móvil el día de la boda para subir tus fotos directamente aquí. Imprímelo y ponlo en cada mesa.</p>
         </div>
       </div>
 
@@ -796,7 +801,7 @@
 <section class="tab-panel" id="panel-juego">
   <div class="section" style="padding-top:56px;">
     <div class="wrap">
-      <div class="section-head">
+      <div class="section-head wide-head">
         <span class="kicker">Un poco de diversión</span>
         <h2>Atrapa el ramo</h2>
         <p>Saltad las copas de champán y llegad lo más lejos posible. ¡Quien consiga la puntuación más alta se lleva un premio especial el día de la boda!</p>
@@ -865,6 +870,12 @@
   tabButtons.forEach(btn => {
     btn.addEventListener('click', () => showTab(btn.dataset.tab));
   });
+
+  // Si se entra con un enlace tipo .../#recuerdos (como el del QR), abre esa pestaña directamente
+  const initialTab = location.hash.replace('#', '');
+  if(initialTab && document.getElementById('panel-' + initialTab)){
+    showTab(initialTab);
+  }
 
   // ---- Countdown ----
   const weddingDate = new Date('2027-05-01T12:00:00');
