@@ -224,6 +224,16 @@
   .upload-btn-secondary{ background:none; border:1px solid var(--olive-deep); color:var(--olive-deep); }
   .upload-status{ margin-top:14px; font-size:0.85rem; color:var(--olive); min-height:1.2em; }
   .upload-status.error{ color:var(--rust); }
+  .upload-list{ margin-top:14px; display:flex; flex-direction:column; gap:10px; text-align:left; }
+  .upload-item{ display:flex; align-items:center; gap:10px; font-size:0.82rem; color:var(--ink); }
+  .upload-item-name{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .upload-item-bar{ width:70px; flex-shrink:0; height:5px; background:var(--line); border-radius:3px; overflow:hidden; }
+  .upload-item-bar-fill{ height:100%; width:0%; background:var(--olive-deep); transition:width 0.2s ease; }
+  .upload-item-status{ flex-shrink:0; width:18px; text-align:center; font-weight:600; }
+  .upload-item.done .upload-item-status{ color:var(--olive-deep); }
+  .upload-item.done .upload-item-bar-fill{ background:var(--olive-deep); }
+  .upload-item.error .upload-item-status{ color:var(--rust); }
+  .upload-item.error .upload-item-bar-fill{ background:var(--rust); }
   .qr-box{
     display:flex; gap:28px; align-items:center; margin-top:56px; flex-wrap:wrap;
     background:var(--paper); border:1px solid var(--line); padding:28px; border-radius:2px;
@@ -794,12 +804,13 @@
         <p style="font-size:0.88rem; color:var(--olive);">JPG, PNG o vídeo · puedes seleccionar varias a la vez</p>
         <div class="upload-buttons">
           <label class="upload-btn" for="fileInputCamera">Hacer una foto</label>
-          <input type="file" id="fileInputCamera" accept="image/*,video/*" capture="environment" class="hidden">
+          <input type="file" id="fileInputCamera" accept="image/*" capture="environment" class="hidden">
 
           <label class="upload-btn upload-btn-secondary" for="fileInputGallery">Elegir de la galería</label>
           <input type="file" id="fileInputGallery" accept="image/*,video/*" multiple class="hidden">
         </div>
         <div class="upload-status" id="uploadStatus"></div>
+        <div class="upload-list" id="uploadList"></div>
       </div>
 
       <div class="qr-box">
@@ -1078,6 +1089,94 @@
   const fileInputCamera = document.getElementById('fileInputCamera');
   const fileInputGallery = document.getElementById('fileInputGallery');
   const uploadStatus = document.getElementById('uploadStatus');
+  const uploadList = document.getElementById('uploadList');
+
+  const COMPRESS_ABOVE = 3 * 1024 * 1024;   // solo se comprime a partir de 3 MB
+  const MAX_FILE_SIZE = 30 * 1024 * 1024;   // 30 MB, límite razonable para el backend
+
+  // Solo reduce el archivo si pesa más de lo necesario para subir rápido; si ya es
+  // ligero, se sube tal cual, sin tocar la calidad.
+  function maybeCompressImage(file){
+    return new Promise((resolve) => {
+      if(!file.type.startsWith('image/') || file.type === 'image/gif' || file.size <= COMPRESS_ABOVE){
+        resolve(file);
+        return;
+      }
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const maxDim = 2400;
+        let { width, height } = img;
+        if(width > maxDim || height > maxDim){
+          if(width > height){ height = Math.round(height * maxDim / width); width = maxDim; }
+          else{ width = Math.round(width * maxDim / height); height = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => {
+          URL.revokeObjectURL(url);
+          if(blob && blob.size < file.size){
+            resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
+          }else{
+            resolve(file); // si por lo que sea no mejora, se sube el original
+          }
+        }, 'image/jpeg', 0.9);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+      img.src = url;
+    });
+  }
+
+  function fileToBase64(file){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function createUploadItem(name){
+    const el = document.createElement('div');
+    el.className = 'upload-item';
+    el.innerHTML = `
+      <span class="upload-item-name">${name}</span>
+      <span class="upload-item-bar"><span class="upload-item-bar-fill"></span></span>
+      <span class="upload-item-status">⏳</span>
+    `;
+    uploadList.appendChild(el);
+    return {
+      setProgress(pct){ el.querySelector('.upload-item-bar-fill').style.width = pct + '%'; },
+      setDone(){ el.classList.add('done'); el.querySelector('.upload-item-status').textContent = '✓'; el.querySelector('.upload-item-bar-fill').style.width = '100%'; },
+      setError(msg){ el.classList.add('error'); el.querySelector('.upload-item-status').textContent = '✗'; el.title = msg || ''; }
+    };
+  }
+
+  function uploadOne(file, item){
+    return new Promise((resolve) => {
+      fileToBase64(file).then((base64) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', APPS_SCRIPT_URL, true);
+        xhr.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+        xhr.timeout = 90000; // 90s: si tarda más que esto, se avisa en vez de quedarse colgado
+        xhr.upload.onprogress = (e) => {
+          if(e.lengthComputable){ item.setProgress(Math.round((e.loaded / e.total) * 100)); }
+        };
+        xhr.onload = () => {
+          try{
+            const result = JSON.parse(xhr.responseText);
+            if(result.success){ item.setDone(); resolve(true); }
+            else{ item.setError(result.error); resolve(false); }
+          }catch(err){ item.setError('Respuesta inesperada del servidor'); resolve(false); }
+        };
+        xhr.onerror = () => { item.setError('Error de conexión'); resolve(false); };
+        xhr.ontimeout = () => { item.setError('Tardó demasiado — prueba otra vez con mejor cobertura'); resolve(false); };
+        xhr.send(JSON.stringify({ filename: file.name, mimeType: file.type, file: base64 }));
+      }).catch(() => { item.setError('No se pudo leer el archivo'); resolve(false); });
+    });
+  }
 
   async function handleFiles(fileList){
     const files = Array.from(fileList);
@@ -1089,53 +1188,37 @@
       return;
     }
     uploadStatus.classList.remove('error');
+    uploadList.innerHTML = '';
 
-    let allOk = true;
-    for(const file of files){
-      uploadStatus.textContent = `Subiendo ${file.name}...`;
-      try{
-        const base64 = await fileToBase64(file);
-        const res = await fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            filename: file.name,
-            mimeType: file.type,
-            file: base64
-          })
-        });
-        const result = await res.json();
-        if(!result.success){
-          allOk = false;
-          uploadStatus.textContent = `No se pudo subir ${file.name}: ${result.error || 'revisa el FOLDER_ID en apps-script.gs'}`;
-          uploadStatus.classList.add('error');
-          return;
-        }
-      }catch(err){
-        allOk = false;
-        uploadStatus.textContent = `Error subiendo ${file.name}. Revisa que APPS_SCRIPT_URL esté bien copiada y que el script esté desplegado como "Cualquier usuario".`;
-        uploadStatus.classList.add('error');
-        console.error(err);
-        return;
+    let okCount = 0;
+    for(const originalFile of files){
+      const item = createUploadItem(originalFile.name);
+
+      if(originalFile.size > MAX_FILE_SIZE){
+        item.setError('Archivo demasiado grande (más de 30 MB)');
+        continue;
       }
+
+      uploadStatus.textContent = `Subiendo ${okCount + 1} de ${files.length}...`;
+      const file = await maybeCompressImage(originalFile);
+      const ok = await uploadOne(file, item);
+      if(ok) okCount++;
     }
-    if(allOk){
+
+    if(okCount === files.length){
       uploadStatus.textContent = '¡Fotos subidas! Gracias por compartirlas.';
-      loadGallery();
+    }else if(okCount > 0){
+      uploadStatus.textContent = `Se subieron ${okCount} de ${files.length}. Revisa las que fallaron.`;
+      uploadStatus.classList.add('error');
+    }else{
+      uploadStatus.textContent = 'No se pudo subir ninguna. Revisa la conexión e inténtalo de nuevo.';
+      uploadStatus.classList.add('error');
     }
+    if(okCount > 0){ loadGallery(); }
   }
 
   fileInputCamera.addEventListener('change', (e) => handleFiles(e.target.files));
   fileInputGallery.addEventListener('change', (e) => handleFiles(e.target.files));
-
-  function fileToBase64(file){
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(',')[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
 
   // ---- Gallery ----
   async function loadGallery(){
