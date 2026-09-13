@@ -220,6 +220,8 @@
     display:inline-block; margin-top:16px; background:var(--olive-deep); color:var(--paper);
     padding:12px 28px; border-radius:999px; cursor:pointer; border:none; font-family:'Jost'; font-size:0.9rem;
   }
+  .upload-buttons{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .upload-btn-secondary{ background:none; border:1px solid var(--olive-deep); color:var(--olive-deep); }
   .upload-status{ margin-top:14px; font-size:0.85rem; color:var(--olive); min-height:1.2em; }
   .upload-status.error{ color:var(--rust); }
   .qr-box{
@@ -790,13 +792,18 @@
       <div class="upload-box">
         <p style="margin:0 0 4px; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.15rem;">Comparte tus fotos</p>
         <p style="font-size:0.88rem; color:var(--olive);">JPG, PNG o vídeo · puedes seleccionar varias a la vez</p>
-        <label class="upload-btn" for="fileInput">Elegir fotos</label>
-        <input type="file" id="fileInput" accept="image/*,video/*" multiple capture="environment">
+        <div class="upload-buttons">
+          <label class="upload-btn" for="fileInputCamera">Hacer una foto</label>
+          <input type="file" id="fileInputCamera" accept="image/*,video/*" capture="environment" class="hidden">
+
+          <label class="upload-btn upload-btn-secondary" for="fileInputGallery">Elegir de la galería</label>
+          <input type="file" id="fileInputGallery" accept="image/*,video/*" multiple class="hidden">
+        </div>
         <div class="upload-status" id="uploadStatus"></div>
       </div>
 
       <div class="qr-box">
-        <img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https%3A%2F%2Fblancayjavi.es%2F%23recuerdos" alt="Código QR para subir fotos">
+        <img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https%3A%2F%2Fwww.blancayjavi.es%2F%23recuerdos" alt="Código QR para subir fotos">
         <div>
           <h3 style="font-size:1.3rem;">Código QR para el día de la boda</h3>
           <p style="font-size:0.9rem; margin:8px 0 0;">Escanea este código con el móvil el día de la boda para subir tus fotos directamente aquí.</p>
@@ -1068,11 +1075,12 @@
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzljPw_xo_sZ-Z95vh8vlZcsWafSTkC5dIzdAJanROE7Wrn7oWMIyJuXlTktfdZ-377kA/exec";
   const BACKEND_CONFIGURADO = /^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(APPS_SCRIPT_URL);
 
-  const fileInput = document.getElementById('fileInput');
+  const fileInputCamera = document.getElementById('fileInputCamera');
+  const fileInputGallery = document.getElementById('fileInputGallery');
   const uploadStatus = document.getElementById('uploadStatus');
 
-  fileInput.addEventListener('change', async (e) => {
-    const files = Array.from(e.target.files);
+  async function handleFiles(fileList){
+    const files = Array.from(fileList);
     if(!files.length) return;
 
     if(!BACKEND_CONFIGURADO){
@@ -1115,7 +1123,10 @@
       uploadStatus.textContent = '¡Fotos subidas! Gracias por compartirlas.';
       loadGallery();
     }
-  });
+  }
+
+  fileInputCamera.addEventListener('change', (e) => handleFiles(e.target.files));
+  fileInputGallery.addEventListener('change', (e) => handleFiles(e.target.files));
 
   function fileToBase64(file){
     return new Promise((resolve, reject) => {
