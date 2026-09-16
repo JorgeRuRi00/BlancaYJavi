@@ -286,6 +286,8 @@
     position:absolute; top:14px; right:18px; background:none; border:none; cursor:pointer;
     font-size:1.4rem; color:var(--olive); line-height:1;
   }
+  .rsvp-summary-row{ font-size:0.92rem; margin-bottom:8px; line-height:1.5; }
+  .rsvp-summary-row strong{ color:var(--olive-deep); font-weight:500; }
   .info-list .meta{ font-size:0.85rem; color:var(--olive); }
   .meta-sub{ display:block; font-size:0.8rem; color:var(--olive); font-style:italic; margin-top:2px; }
   .note{ font-size:0.82rem; color:var(--rust); font-style:italic; margin-top:10px; }
@@ -872,6 +874,15 @@
   </div>
 </section>
 
+<div class="modal-overlay hidden" id="rsvpConfirmModal">
+  <div class="modal-box">
+    <button class="modal-close" id="rsvpConfirmModalClose" aria-label="Cerrar">&times;</button>
+    <h3>¡Gracias! Hemos recibido tu confirmación</h3>
+    <p style="font-size:0.85rem; color:var(--olive); margin-bottom:16px;">Revisa que todo esté correcto:</p>
+    <div id="rsvpConfirmSummary"></div>
+  </div>
+</div>
+
 <div class="modal-overlay hidden" id="offerModal">
   <div class="modal-box">
     <button class="modal-close" id="offerModalClose" aria-label="Cerrar">&times;</button>
@@ -993,6 +1004,32 @@
     }
   });
 
+  function escapeHtml(str){
+    return String(str || '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function buildRsvpSummary(p){
+    const rows = [];
+    rows.push(`<strong>Nombre:</strong> ${escapeHtml(p.nombre)} ${escapeHtml(p.apellidos)}`);
+    rows.push(`<strong>¿Asiste?:</strong> ${escapeHtml(p.asistencia)}`);
+    if(p.asistencia === 'Sí, asistiré'){
+      if(p.acompanante){ rows.push(`<strong>Acompañante(s):</strong> ${escapeHtml(p.acompanante)}`); }
+      if(p.alergias){ rows.push(`<strong>Alergias / condiciones médicas:</strong> ${escapeHtml(p.alergias)}`); }
+      if(p.autobus){ rows.push(`<strong>Autobús:</strong> ${escapeHtml(p.autobus)}`); }
+      if(p.turnoVuelta){ rows.push(`<strong>Turno de vuelta:</strong> ${escapeHtml(p.turnoVuelta)}`); }
+      if(p.cancion){ rows.push(`<strong>Canción:</strong> ${escapeHtml(p.cancion)}`); }
+      if(p.mensaje){ rows.push(`<strong>Mensaje:</strong> ${escapeHtml(p.mensaje)}`); }
+    }
+    return rows.map(r => `<p class="rsvp-summary-row">${r}</p>`).join('');
+  }
+
+  document.getElementById('rsvpConfirmModalClose').addEventListener('click', () => {
+    document.getElementById('rsvpConfirmModal').classList.add('hidden');
+  });
+  document.getElementById('rsvpConfirmModal').addEventListener('click', (e) => {
+    if(e.target.id === 'rsvpConfirmModal'){ e.target.classList.add('hidden'); }
+  });
+
   rsvpForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     rsvpStatus.classList.remove('error');
@@ -1032,6 +1069,8 @@
       const result = await res.json();
       if(result.success){
         rsvpStatus.textContent = '¡Gracias! Hemos recibido vuestra confirmación.';
+        document.getElementById('rsvpConfirmSummary').innerHTML = buildRsvpSummary(payload);
+        document.getElementById('rsvpConfirmModal').classList.remove('hidden');
         rsvpForm.reset();
         acompananteRow.classList.add('hidden');
         document.getElementById('companionsContainer').innerHTML = '';
