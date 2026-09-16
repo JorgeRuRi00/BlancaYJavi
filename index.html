@@ -1003,6 +1003,10 @@
       return;
     }
 
+    const submitBtn = rsvpForm.querySelector('button[type="submit"]');
+    if(submitBtn.disabled) return; // evita doble envío si se pulsa varias veces seguidas
+    submitBtn.disabled = true;
+
     const payload = {
       type: 'rsvp',
       nombre: document.getElementById('rsvpNombre').value.trim(),
@@ -1041,6 +1045,8 @@
       rsvpStatus.textContent = 'Error al enviar. Revisa la conexión e inténtalo de nuevo.';
       rsvpStatus.classList.add('error');
       console.error(err);
+    }finally{
+      submitBtn.disabled = false;
     }
   });
 
