@@ -369,6 +369,8 @@
     pointer-events:none;
   }
   .game-overlay.hidden{ display:none; }
+  .game-overlay button{ pointer-events:auto; }
+  .game-overlay #gameRestartBtn{ margin-top:14px; }
   #leaderboardList .rank{ color:var(--gold); font-family:'Cormorant Garamond', serif; font-style:italic; margin-right:8px; }
 
   @media (min-width: 761px){
@@ -846,7 +848,10 @@
       <div class="game-box">
         <canvas id="gameCanvas" height="200"></canvas>
         <div class="game-overlay" id="gameOverlay">
-          <p id="gameOverlayText">Toca la pantalla o pulsa espacio para empezar</p>
+          <div>
+            <p id="gameOverlayText">Toca la pantalla o pulsa espacio para empezar</p>
+            <button type="button" id="gameRestartBtn" class="primary-btn hidden">Jugar de nuevo</button>
+          </div>
         </div>
       </div>
 
@@ -1299,9 +1304,19 @@
     const ctx = canvas.getContext('2d');
     const overlay = document.getElementById('gameOverlay');
     const overlayText = document.getElementById('gameOverlayText');
+    const restartBtn = document.getElementById('gameRestartBtn');
     const scoreForm = document.getElementById('scoreForm');
     const scoreStatus = document.getElementById('scoreStatus');
     const OBSTACLE_EMOJIS = ['🥂', '🍾'];
+
+    // Base de referencia: 60 fotogramas por segundo (16.67 ms/fotograma). Todo el
+    // movimiento se escala según el tiempo real transcurrido entre fotogramas (deltaTime)
+    // en vez de asumir que cada fotograma dura siempre lo mismo. Así, un móvil con pantalla
+    // a 90Hz o 120Hz (frecuente en Android) no mueve el juego más deprisa que uno a 60Hz
+    // (como la mayoría de iPhone): antes el juego avanzaba "un paso" por cada fotograma
+    // dibujado, y en pantallas más rápidas eso significaba más pasos por segundo real.
+    const BASE_FRAME_MS = 1000 / 60;
+    const MAX_STEP_MS = 50; // evita saltos grandes si la pestaña estuvo en segundo plano
 
     function resizeCanvas(){
       canvas.width = canvas.clientWidth;
@@ -1310,7 +1325,10 @@
     window.addEventListener('resize', resizeCanvas);
     onOpenJuego = () => { resizeCanvas(); draw(); };
 
-    let groundY, player, obstacles, spawnTimer, speed, score, running, gameOverFlag, animFrame;
+    let groundY, player, obstacles, spawnTimer, speed, score, gameState, animFrame, lastTimestamp;
+    // gameState: 'idle' (pantalla inicial, sin partida perdida que proteger),
+    // 'playing' (partida en curso) o 'gameover' (ya terminó, esperando que guarden
+    // la puntuación o pulsen el botón de reinicio).
 
     function resetGame(){
       groundY = canvas.height - 40;
@@ -1319,8 +1337,8 @@
       spawnTimer = 70;
       speed = 3;
       score = 0;
-      gameOverFlag = false;
     }
+    gameState = 'idle';
     resetGame();
 
     function speedForScore(s){
@@ -1337,15 +1355,27 @@
 
     function startGame(){
       resetGame();
-      running = true;
+      gameState = 'playing';
+      lastTimestamp = null;
       overlay.classList.add('hidden');
+      restartBtn.classList.add('hidden');
       scoreForm.classList.add('hidden');
+      cancelAnimationFrame(animFrame);
       animFrame = requestAnimationFrame(loop);
     }
 
-    function jump(){
-      if(!running){ startGame(); return; }
+    function doJump(){
       if(player.y >= groundY){ player.vy = -12; }
+    }
+
+    // Toque/clic sobre el propio lienzo del juego. Importante: si la partida ya
+    // terminó ('gameover'), un toque aquí NO debe reiniciar la partida — es justo lo
+    // que causaba que se perdiera la puntuación al rozar el lienzo de camino al
+    // formulario de guardarla. Reiniciar solo pasa por el botón explícito "Jugar de nuevo".
+    function handleCanvasTap(){
+      if(gameState === 'playing'){ doJump(); }
+      else if(gameState === 'idle'){ startGame(); }
+      // en 'gameover' no hacemos nada: hay que usar el botón o la tecla espacio
     }
 
     function rectsOverlap(a, b){
@@ -1367,27 +1397,30 @@
       }
     }
 
-    function update(){
+    // "steps" representa cuántos fotogramas de referencia (a 60fps) equivale el tiempo
+    // real transcurrido. A 60Hz, steps≈1 cada vez; a 120Hz, cada fotograma dura la mitad
+    // así que steps≈0.5 — el resultado es el mismo avance por segundo en ambos casos.
+    function update(steps){
       speed = speedForScore(score);
 
-      player.vy += 0.7;
-      player.y += player.vy;
+      player.vy += 0.7 * steps;
+      player.y += player.vy * steps;
       if(player.y > groundY){ player.y = groundY; player.vy = 0; }
 
-      spawnTimer--;
+      spawnTimer -= steps;
       if(spawnTimer <= 0){
         spawnObstacle();
         spawnTimer = nextSpawnGap(score);
       }
-      obstacles.forEach(o => o.x -= speed);
+      obstacles.forEach(o => o.x -= speed * steps);
       obstacles = obstacles.filter(o => o.x > -40);
 
-      score += 0.15;
+      score += 0.15 * steps;
 
       const playerBox = { x: player.x - 13, y: player.y - 26, w: 26, h: 26 };
       obstacles.forEach(o => {
         const obsBox = { x: o.x - o.width / 2, y: groundY - 22, w: o.width, h: 24 };
-        if(rectsOverlap(playerBox, obsBox)){ gameOverFlag = true; }
+        if(rectsOverlap(playerBox, obsBox)){ gameState = 'gameover'; }
       });
     }
 
@@ -1408,11 +1441,15 @@
       ctx.fillText('Puntos: ' + Math.floor(score), 10, 20);
     }
 
-    function loop(){
-      update();
+    function loop(timestamp){
+      if(lastTimestamp === null){ lastTimestamp = timestamp; }
+      const dt = Math.min(timestamp - lastTimestamp, MAX_STEP_MS);
+      lastTimestamp = timestamp;
+      const steps = dt / BASE_FRAME_MS;
+
+      update(steps);
       draw();
-      if(gameOverFlag){
-        running = false;
+      if(gameState === 'gameover'){
         onGameOver();
       }else{
         animFrame = requestAnimationFrame(loop);
@@ -1420,19 +1457,22 @@
     }
 
     function onGameOver(){
-      overlayText.textContent = 'Puntuación: ' + Math.floor(score) + ' — toca para volver a intentarlo';
+      overlayText.textContent = 'Puntuación: ' + Math.floor(score);
+      restartBtn.classList.remove('hidden');
       overlay.classList.remove('hidden');
       scoreForm.classList.remove('hidden');
       scoreForm.dataset.lastScore = Math.floor(score);
     }
 
-    canvas.addEventListener('pointerdown', jump);
+    canvas.addEventListener('pointerdown', handleCanvasTap);
+    restartBtn.addEventListener('click', (e) => { e.stopPropagation(); startGame(); });
     document.addEventListener('keydown', (e) => {
       if(e.code === 'Space' && document.getElementById('panel-juego').classList.contains('active')){
         const tag = document.activeElement ? document.activeElement.tagName : '';
         if(tag === 'INPUT' || tag === 'TEXTAREA') return;
         e.preventDefault();
-        jump();
+        if(gameState === 'playing'){ doJump(); }
+        else{ startGame(); } // en reposo o tras game over, espacio reinicia explícitamente
       }
     });
 
